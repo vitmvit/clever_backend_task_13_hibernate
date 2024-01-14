@@ -14,6 +14,5 @@ import java.util.UUID;
 @AllArgsConstructor
 public class HouseUpdateDto extends HouseCreateDto {
 
-    private Long id;
     private UUID uuid;
 }

@@ -1,9 +1,10 @@
 plugins {
     id 'java'
+    id 'war'
 }
 
-group 'org.example'
-version '1.0-SNAPSHOT'
+group 'ru.clevertec.house'
+version '1.0'
 
 repositories {
     mavenCentral()
@@ -11,6 +12,7 @@ repositories {
 
 dependencies {
 
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.16.1'
     implementation 'org.hibernate:hibernate-core:6.4.1.Final'
     implementation 'org.springframework:spring-context:6.1.2'
     implementation 'org.springframework:spring-core:6.1.2'
@@ -34,7 +36,7 @@ dependencies {
     testImplementation "org.mockito:mockito-junit-jupiter:5.6.0"
     testCompileOnly 'org.projectlombok:lombok:1.18.30'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.30'
-
+    testImplementation 'org.assertj:assertj-core:3.24.2'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
 }

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="001" author="vitikova" dbms="postgresql">
+        <sql>
+            DROP TABLE IF EXISTS "house";
+            DROP SEQUENCE IF EXISTS house_id_seq;
+            CREATE SEQUENCE house_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 9223372036854775807 START 19 CACHE 1;
+
+            CREATE TABLE "public"."house"
+            (
+                "id"          bigint DEFAULT nextval('house_id_seq') NOT NULL,
+                "uuid"        text                                   NOT NULL,
+                "area"        numeric                                NOT NULL,
+                "country"     text                                   NOT NULL,
+                "city"        text                                   NOT NULL,
+                "street"      text                                   NOT NULL,
+                "number"      integer                                NOT NULL,
+                "create_date" timestamp,
+                CONSTRAINT "house_pkey" PRIMARY KEY ("id")
+            ) WITH (oids = false);
+
+
+            DROP TABLE IF EXISTS "house_owner";
+            CREATE TABLE "public"."house_owner"
+            (
+                "house_id"  bigint NOT NULL,
+                "person_id" bigint NOT NULL
+            ) WITH (oids = false);
+
+
+            DROP TABLE IF EXISTS "person";
+            DROP SEQUENCE IF EXISTS person_id_seq;
+            CREATE SEQUENCE person_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 9223372036854775807 START 17 CACHE 1;
+
+            CREATE TABLE "public"."person"
+            (
+                "id"              bigint DEFAULT nextval('person_id_seq') NOT NULL,
+                "uuid"            text                                    NOT NULL,
+                "name"            text                                    NOT NULL,
+                "surname"         text                                    NOT NULL,
+                "sex"             text                                    NOT NULL,
+                "passport_series" text                                    NOT NULL,
+                "passport_number" text                                    NOT NULL,
+                "create_date"     timestamp                               NOT NULL,
+                "update_date"     timestamp                               NOT NULL,
+                CONSTRAINT "person_pkey" PRIMARY KEY ("id")
+            ) WITH (oids = false);
+
+
+            ALTER TABLE ONLY "public"."house_owner"
+                ADD CONSTRAINT "house_owner_house_id_fkey" FOREIGN KEY (house_id) REFERENCES house (id) ON UPDATE RESTRICT ON DELETE RESTRICT NOT DEFERRABLE;
+            ALTER TABLE ONLY "public"."house_owner"
+                ADD CONSTRAINT "house_owner_person_id_fkey" FOREIGN KEY (person_id) REFERENCES person (id) ON UPDATE RESTRICT ON DELETE RESTRICT NOT DEFERRABLE;
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

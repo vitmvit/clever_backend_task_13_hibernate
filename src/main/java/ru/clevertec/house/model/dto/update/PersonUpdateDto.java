@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ru.clevertec.house.model.dto.create.PersonCreateDto;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Setter
@@ -14,6 +15,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class PersonUpdateDto extends PersonCreateDto {
 
-    private Long id;
     private UUID uuid;
+    private LocalDateTime createDate;
+    private LocalDateTime updateDate;
 }

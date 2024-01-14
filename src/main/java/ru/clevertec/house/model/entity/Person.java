@@ -1,12 +1,15 @@
 package ru.clevertec.house.model.entity;
 
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldNameConstants;
 import ru.clevertec.house.constant.SexType;
-import ru.clevertec.house.model.parent.BaseModel;
+import ru.clevertec.house.model.entity.parent.BaseModel;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
+@Entity
 @Getter
 @Setter
 @Builder
@@ -22,6 +25,22 @@ public class Person extends BaseModel {
     private String passportNumber;
     private LocalDateTime createDate;
     private LocalDateTime updateDate;
-    private House house;
-    private boolean isOwner;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JoinColumn(
+            name = "house_id",
+            referencedColumnName = "id",
+            nullable = false,
+            foreignKey = @ForeignKey(name = "fk_home_resident_id_to_id")
+    )
+    private House home;
+
+    @ManyToMany(cascade = CascadeType.PERSIST)
+    @JoinTable(
+            name = "house_owner",
+            joinColumns = @JoinColumn(name = "house_id"),
+            inverseJoinColumns = @JoinColumn(name = "person_id"),
+            foreignKey = @ForeignKey(name = "fk_owner_house_id_to_id")
+    )
+    private List<House> house;
 }
