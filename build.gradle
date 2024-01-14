@@ -10,6 +10,31 @@ repositories {
 }
 
 dependencies {
+
+    implementation 'org.hibernate:hibernate-core:6.4.1.Final'
+    implementation 'org.springframework:spring-context:6.1.2'
+    implementation 'org.springframework:spring-core:6.1.2'
+    implementation 'org.springframework:spring-beans:6.1.2'
+    implementation 'org.springframework:spring-jdbc:6.1.2'
+
+    implementation 'org.liquibase:liquibase-core:4.25.1'
+    compileOnly 'javax.servlet:javax.servlet-api:4.0.1'
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.16.0'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.15.2'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
+    implementation 'javax.servlet:javax.servlet-api:4.0.1'
+    implementation 'org.postgresql:postgresql:42.6.0'
+    compileOnly 'org.projectlombok:lombok:1.18.30'
+    annotationProcessor 'org.projectlombok:lombok:1.18.30'
+    implementation 'org.mapstruct:mapstruct:1.4.1.Final'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.4.1.Final'
+
+    testImplementation 'org.mockito:mockito-core:5.7.0'
+    testImplementation 'org.mockito:mockito-inline:5.2.0'
+    testImplementation "org.mockito:mockito-junit-jupiter:5.6.0"
+    testCompileOnly 'org.projectlombok:lombok:1.18.30'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.30'
+
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
 }
