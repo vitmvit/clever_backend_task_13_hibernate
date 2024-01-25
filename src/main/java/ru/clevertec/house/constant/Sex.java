@@ -1,6 +1,6 @@
 package ru.clevertec.house.constant;
 
-public enum SexType {
+public enum Sex {
 
     MALE,
     FEMALE

@@ -1,26 +1,29 @@
 package ru.clevertec.house.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import ru.clevertec.house.constant.SexType;
+import ru.clevertec.house.constant.Sex;
+import ru.clevertec.house.model.dto.parent.UuidDto;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
-@Setter
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PersonDto {
+public class PersonDto extends UuidDto {
 
-    private UUID uuid;
     private String name;
     private String surname;
-    private SexType sex;
-    private String passportSeries;
-    private String passportNumber;
+    private Sex sex;
+    private PassportDto passport;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
     private LocalDateTime createDate;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
     private LocalDateTime updateDate;
 }

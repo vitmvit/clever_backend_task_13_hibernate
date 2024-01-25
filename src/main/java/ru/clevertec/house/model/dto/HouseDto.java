@@ -1,24 +1,26 @@
 package ru.clevertec.house.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import ru.clevertec.house.model.dto.parent.UuidDto;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
-@Setter
 @Getter
-@AllArgsConstructor
+@Setter
 @NoArgsConstructor
-public class HouseDto {
+@AllArgsConstructor
+public class HouseDto extends UuidDto {
 
-    private UUID uuid;
-    private double area;
+    private String area;
     private String country;
     private String city;
     private String street;
     private int number;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
     private LocalDateTime createDate;
 }

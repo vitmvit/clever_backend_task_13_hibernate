@@ -119,1091 +119,777 @@
 
 ## CRUD операции:
 
-### PersonController
-
-GET-запрос по uuid:
-
-```http request
- http://localhost:8080/person?uuid=e3ca72c4-cc61-49ca-acd0-8e8c315abaf9
-```
-
-Результат (code 200):
-
-```json
-{
-  "uuid": "e3ca72c4-cc61-49ca-acd0-8e8c315abaf9",
-  "name": "name1",
-  "surname": "surname1",
-  "sex": "MALE",
-  "passportSeries": "HM",
-  "passportNumber": "4334564",
-  "createDate": [
-    2024,
-    1,
-    14,
-    21,
-    17,
-    11,
-    798718000
-  ],
-  "updateDate": [
-    2024,
-    1,
-    14,
-    21,
-    17,
-    11,
-    798718000
-  ]
-}
-```
-
-Person не найден (code 404):
-
-```text
-Person not found
-```
-
-___
-GET-запрос по page и count:
-
-```http request
- http://localhost:8080/person?page=2&count=3
-```
-
-Результат (code 200):
-
-```json
-[
-  {
-    "uuid": "b74c342b-6151-4294-b7bb-d45eee9db547",
-    "name": "name4",
-    "surname": "surname4",
-    "sex": "MALE",
-    "passportSeries": "HM",
-    "passportNumber": "6789054",
-    "createDate": [
-      2024,
-      1,
-      14,
-      21,
-      19,
-      52,
-      344881000
-    ],
-    "updateDate": [
-      2024,
-      1,
-      14,
-      21,
-      19,
-      52,
-      344881000
-    ]
-  },
-  {
-    "uuid": "df4d28cb-e006-43a9-9a23-e4bb680e6248",
-    "name": "name5",
-    "surname": "surname5",
-    "sex": "FEMALE",
-    "passportSeries": "HJ",
-    "passportNumber": "6547895",
-    "createDate": [
-      2024,
-      1,
-      14,
-      21,
-      20,
-      58,
-      699287000
-    ],
-    "updateDate": [
-      2024,
-      1,
-      14,
-      21,
-      20,
-      58,
-      699287000
-    ]
-  },
-  {
-    "uuid": "10351a9b-76c3-475c-848a-ff68ff8160fe",
-    "name": "name6",
-    "surname": "surname6",
-    "sex": "MALE",
-    "passportSeries": "HM",
-    "passportNumber": "6784501",
-    "createDate": [
-      2024,
-      1,
-      14,
-      21,
-      21,
-      30,
-      452633000
-    ],
-    "updateDate": [
-      2024,
-      1,
-      14,
-      21,
-      21,
-      30,
-      452633000
-    ]
-  }
-]
-```
-
-Ошибка выполнения (code 500):
-
-```text
-Error retrieving persons list
-```
-
-___
-GET-запрос по page:
-
-```http request
- http://localhost:8080/person?page=1
-```
-
-Результат (code 200):
-
-```json
-[
-  {
-    "uuid": "e3ca72c4-cc61-49ca-acd0-8e8c315abaf9",
-    "name": "name1",
-    "surname": "surname1",
-    "sex": "MALE",
-    "passportSeries": "HM",
-    "passportNumber": "4334564",
-    "createDate": [
-      2024,
-      1,
-      14,
-      21,
-      17,
-      11,
-      798718000
-    ],
-    "updateDate": [
-      2024,
-      1,
-      14,
-      21,
-      17,
-      11,
-      798718000
-    ]
-  },
-  {
-    "uuid": "fc0aee80-d3c0-45b2-87ab-e337a8d2e81d",
-    "name": "name2",
-    "surname": "surname2",
-    "sex": "MALE",
-    "passportSeries": "HM",
-    "passportNumber": "8764963",
-    "createDate": [
-      2024,
-      1,
-      14,
-      21,
-      18,
-      37,
-      506266000
-    ],
-    "updateDate": [
-      2024,
-      1,
-      14,
-      21,
-      18,
-      37,
-      506266000
-    ]
-  },
-  {
-    "uuid": "68b43535-6d0c-4439-9055-bbc83dc2448b",
-    "name": "name3",
-    "surname": "surname3",
-    "sex": "FEMALE",
-    "passportSeries": "HM",
-    "passportNumber": "6542317",
-    "createDate": [
-      2024,
-      1,
-      14,
-      21,
-      19,
-      14,
-      717783000
-    ],
-    "updateDate": [
-      2024,
-      1,
-      14,
-      21,
-      19,
-      14,
-      717783000
-    ]
-  },
-  {
-    "uuid": "b74c342b-6151-4294-b7bb-d45eee9db547",
-    "name": "name4",
-    "surname": "surname4",
-    "sex": "MALE",
-    "passportSeries": "HM",
-    "passportNumber": "6789054",
-    "createDate": [
-      2024,
-      1,
-      14,
-      21,
-      19,
-      52,
-      344881000
-    ],
-    "updateDate": [
-      2024,
-      1,
-      14,
-      21,
-      19,
-      52,
-      344881000
-    ]
-  },
-  {
-    "uuid": "df4d28cb-e006-43a9-9a23-e4bb680e6248",
-    "name": "name5",
-    "surname": "surname5",
-    "sex": "FEMALE",
-    "passportSeries": "HJ",
-    "passportNumber": "6547895",
-    "createDate": [
-      2024,
-      1,
-      14,
-      21,
-      20,
-      58,
-      699287000
-    ],
-    "updateDate": [
-      2024,
-      1,
-      14,
-      21,
-      20,
-      58,
-      699287000
-    ]
-  },
-  {
-    "uuid": "10351a9b-76c3-475c-848a-ff68ff8160fe",
-    "name": "name6",
-    "surname": "surname6",
-    "sex": "MALE",
-    "passportSeries": "HM",
-    "passportNumber": "6784501",
-    "createDate": [
-      2024,
-      1,
-      14,
-      21,
-      21,
-      30,
-      452633000
-    ],
-    "updateDate": [
-      2024,
-      1,
-      14,
-      21,
-      21,
-      30,
-      452633000
-    ]
-  },
-  {
-    "uuid": "38f413e0-d05a-4d7a-bbb3-8cbaf5de98ed",
-    "name": "name7",
-    "surname": "surname7",
-    "sex": "FEMALE",
-    "passportSeries": "HM",
-    "passportNumber": "8796540",
-    "createDate": [
-      2024,
-      1,
-      14,
-      21,
-      21,
-      57,
-      200516000
-    ],
-    "updateDate": [
-      2024,
-      1,
-      14,
-      21,
-      21,
-      57,
-      200516000
-    ]
-  },
-  {
-    "uuid": "3c07f047-43a7-4dd3-939e-ef134a7f711c",
-    "name": "name8",
-    "surname": "surname8",
-    "sex": "MALE",
-    "passportSeries": "HM",
-    "passportNumber": "5546722",
-    "createDate": [
-      2024,
-      1,
-      14,
-      21,
-      22,
-      22,
-      611060000
-    ],
-    "updateDate": [
-      2024,
-      1,
-      14,
-      21,
-      22,
-      22,
-      611060000
-    ]
-  },
-  {
-    "uuid": "4f7e3ae6-d5c7-4337-8cbb-edd65eed01b2",
-    "name": "name9",
-    "surname": "surname9",
-    "sex": "MALE",
-    "passportSeries": "HM",
-    "passportNumber": "0098876",
-    "createDate": [
-      2024,
-      1,
-      14,
-      21,
-      22,
-      55,
-      446021000
-    ],
-    "updateDate": [
-      2024,
-      1,
-      14,
-      21,
-      22,
-      55,
-      446021000
-    ]
-  },
-  {
-    "uuid": "318d2a12-1ecd-403e-b040-a1db8d81ed78",
-    "name": "name10",
-    "surname": "surname10",
-    "sex": "FEMALE",
-    "passportSeries": "HM",
-    "passportNumber": "1123444",
-    "createDate": [
-      2024,
-      1,
-      14,
-      21,
-      23,
-      26,
-      997515000
-    ],
-    "updateDate": [
-      2024,
-      1,
-      14,
-      21,
-      23,
-      26,
-      997515000
-    ]
-  }
-]
-```
-
-Ошибка выполнения (code 500):
-
-```text
-Error retrieving persons list
-```
-
-___
-GET-запрос по count:
-
-```http request
- http://localhost:8080/person?count=3
-```
-
-Результат (code 200):
-
-```json
-[
-  {
-    "uuid": "e3ca72c4-cc61-49ca-acd0-8e8c315abaf9",
-    "name": "name1",
-    "surname": "surname1",
-    "sex": "MALE",
-    "passportSeries": "HM",
-    "passportNumber": "4334564",
-    "createDate": [
-      2024,
-      1,
-      14,
-      21,
-      17,
-      11,
-      798718000
-    ],
-    "updateDate": [
-      2024,
-      1,
-      14,
-      21,
-      17,
-      11,
-      798718000
-    ]
-  },
-  {
-    "uuid": "fc0aee80-d3c0-45b2-87ab-e337a8d2e81d",
-    "name": "name2",
-    "surname": "surname2",
-    "sex": "MALE",
-    "passportSeries": "HM",
-    "passportNumber": "8764963",
-    "createDate": [
-      2024,
-      1,
-      14,
-      21,
-      18,
-      37,
-      506266000
-    ],
-    "updateDate": [
-      2024,
-      1,
-      14,
-      21,
-      18,
-      37,
-      506266000
-    ]
-  },
-  {
-    "uuid": "68b43535-6d0c-4439-9055-bbc83dc2448b",
-    "name": "name3",
-    "surname": "surname3",
-    "sex": "FEMALE",
-    "passportSeries": "HM",
-    "passportNumber": "6542317",
-    "createDate": [
-      2024,
-      1,
-      14,
-      21,
-      19,
-      14,
-      717783000
-    ],
-    "updateDate": [
-      2024,
-      1,
-      14,
-      21,
-      19,
-      14,
-      717783000
-    ]
-  }
-]
-```
-
-Ошибка выполнения (code 500):
-
-```text
-Error retrieving persons list
-```
-
-Неверный запрос (code 400):
-
-```text
-Invalid request parameters
-```
-
-___
-POST-запрос:
-
-```http request
-  http://localhost:8080/person
-```
-
-Body:
-
-```json
-{
-  "name": "name11",
-  "surname": "surname11",
-  "sex": "FEMALE",
-  "passportSeries": "HM",
-  "passportNumber": "4994560"
-}
-```
-
-Результат (code 200):
-
-```json
-{
-  "uuid": "aaef44fa-d2da-46c9-ab2f-3705d5dec36e",
-  "name": "name11",
-  "surname": "surname11",
-  "sex": "FEMALE",
-  "passportSeries": "HM",
-  "passportNumber": "4994560",
-  "createDate": [
-    2024,
-    1,
-    15,
-    0,
-    58,
-    2,
-    734563000
-  ],
-  "updateDate": [
-    2024,
-    1,
-    15,
-    0,
-    58,
-    4,
-    399659000
-  ]
-}
-```
-
-Ошибка выполнения (code 500):
-
-```text
-Person created error
-```
-
-___
-
-PUT-запрос:
-
-```http request
- http://localhost:8088/person
-```
-
-Body:
-
-```json
-{
-  "uuid": "aaef44fa-d2da-46c9-ab2f-3705d5dec36e",
-  "name": "name1",
-  "surname": "surname1",
-  "sex": "MALE",
-  "passportSeries": "HM",
-  "passportNumber": "4994560",
-  "createDate": [
-    2024,
-    1,
-    15,
-    0,
-    58,
-    2,
-    734563000
-  ],
-  "updateDate": [
-    2024,
-    1,
-    15,
-    0,
-    58,
-    4,
-    399659000
-  ]
-}
-```
-
-Результат (code 200):
-
-```json
-{
-  "uuid": "a2ac50ad-fc09-4da1-91cd-f7e32751f6ab",
-  "name": "name1",
-  "surname": "surname1",
-  "sex": "MALE",
-  "passportSeries": "HM",
-  "passportNumber": "4994560",
-  "createDate": [
-    2024,
-    1,
-    15,
-    1,
-    4,
-    7,
-    394116000
-  ],
-  "updateDate": [
-    2024,
-    1,
-    15,
-    1,
-    4,
-    7,
-    394392000
-  ]
-}
-```
-
-Ошибка выполнения (code 500):
-
-```text
-Person updated error
-```
-
-___
-DELETE-запрос (code 200):
-
-```http request
- http://localhost:8088/person?uuid=aaef44fa-d2da-46c9-ab2f-3705d5dec36e
-```
-
-Результат:
-
-```text
-Person is deleted
-```
-
-Ошибка выполнения (500):
-
-```text
-Person deleted error
-```
-
-___
-___
-
 ### HouseController
 
-GET-запрос по uuid:
+#### GET getAll(int offset, int limit):
+
+Default offset = 0
+Default limit = 15
+
+Request:
 
 ```http request
- http://localhost:8080/house?uuid=a0fbbcb0-74ef-43be-a626-55d5b42c9dc1
+http://localhost:8080/api/houses
 ```
 
-Результат (code 200):
+Response:
+
+```json
+[
+  {
+    "uuid": "6d316b83-126e-4090-bc81-4125a68923c0",
+    "area": "AreaOne",
+    "country": "Country",
+    "city": "CityOne",
+    "street": "StreetOne",
+    "number": 19,
+    "createDate": "2024-01-19T13:16:13.992"
+  },
+  {
+    "uuid": "71d9d979-48d9-420c-9454-912225476fef",
+    "area": "AreaTwo",
+    "country": "Country",
+    "city": "City",
+    "street": "StreetTwo",
+    "number": 56,
+    "createDate": "2024-01-19T13:17:12.830"
+  },
+  {
+    "uuid": "f291c4bb-58a0-4800-bfc8-104217051d24",
+    "area": "AreaThree",
+    "country": "Country",
+    "city": "CityTwo",
+    "street": "StreetThree",
+    "number": 43,
+    "createDate": "2024-01-19T13:17:47.442"
+  },
+  {
+    "uuid": "7c204d2c-b694-4dc4-a73a-9fa99b02973f",
+    "area": "AreaTwo",
+    "country": "Country",
+    "city": "City",
+    "street": "StreetOne",
+    "number": 98,
+    "createDate": "2024-01-19T13:18:17.079"
+  },
+  {
+    "uuid": "b6baf98c-ea5a-48ec-a4e5-645998c1cceb",
+    "area": "AreaOne",
+    "country": "Country",
+    "city": "City",
+    "street": "StreetOne",
+    "number": 13,
+    "createDate": "2024-01-19T13:18:39.911"
+  }
+]
+```
+
+Request:
+
+```http request
+http://localhost:8080/api/houses?offset=1&limit=2
+```
+
+Response:
+
+```json
+[
+  {
+    "uuid": "71d9d979-48d9-420c-9454-912225476fef",
+    "area": "AreaTwo",
+    "country": "Country",
+    "city": "City",
+    "street": "StreetTwo",
+    "number": 56,
+    "createDate": "2024-01-19T13:17:12.830"
+  },
+  {
+    "uuid": "f291c4bb-58a0-4800-bfc8-104217051d24",
+    "area": "AreaThree",
+    "country": "Country",
+    "city": "CityTwo",
+    "street": "StreetThree",
+    "number": 43,
+    "createDate": "2024-01-19T13:17:47.442"
+  }
+]
+```
+
+#### GET getByUuid(UUID uuid):
+
+Request:
+
+```http request
+http://localhost:8080/api/houses/f291c4bb-58a0-4800-bfc8-104217051d24
+```
+
+Response:
 
 ```json
 {
-  "uuid": "a0fbbcb0-74ef-43be-a626-55d5b42c9dc1",
-  "area": 33.6,
-  "country": "country1",
-  "city": "city1",
-  "street": "street1",
-  "number": 1,
-  "createDate": [
-    2024,
-    1,
-    14,
-    21,
-    13,
-    3,
-    860747000
-  ]
+  "uuid": "f291c4bb-58a0-4800-bfc8-104217051d24",
+  "area": "AreaThree",
+  "country": "Country",
+  "city": "CityTwo",
+  "street": "StreetThree",
+  "number": 43,
+  "createDate": "2024-01-19T13:17:47.442"
 }
 ```
 
-House не найден (code 404):
+#### GET getAllResidents(UUID uuid):
 
-```text
-House not found
-```
+GET для всех Person проживающих в House
 
-___
-GET-запрос по page и count:
+Request:
 
 ```http request
- http://localhost:8088/house?page=1&count=3
+http://localhost:8080/api/houses/residents/f291c4bb-58a0-4800-bfc8-104217051d24
 ```
 
-Результат (code 200):
+Response:
 
 ```json
 [
   {
-    "uuid": "a0fbbcb0-74ef-43be-a626-55d5b42c9dc1",
-    "area": 33.6,
-    "country": "country1",
-    "city": "city1",
-    "street": "street1",
-    "number": 1,
-    "createDate": [
-      2024,
-      1,
-      14,
-      21,
-      13,
-      3,
-      860747000
-    ]
+    "uuid": "7736bed0-5b5c-4fbc-a919-e56f947a59b7",
+    "name": "Liam",
+    "surname": "Davis",
+    "sex": "MALE",
+    "passport": {
+      "passportSeries": "GH",
+      "passportNumber": "7654321"
+    },
+    "createDate": "2024-01-19T13:26:03.433",
+    "updateDate": "2024-01-19T13:26:03.433"
   },
   {
-    "uuid": "e0f4a6c5-b1d3-475d-83dc-98079744280d",
-    "area": 4.9,
-    "country": "country1",
-    "city": "city1",
-    "street": "street4",
-    "number": 55,
-    "createDate": [
-      2024,
-      1,
-      14,
-      21,
-      13,
-      35,
-      591357000
-    ]
+    "uuid": "d21df8c3-2771-4dcb-9d4d-5f7a971b0c07",
+    "name": "Emma",
+    "surname": "Wilson",
+    "sex": "FEMALE",
+    "passport": {
+      "passportSeries": "IJ",
+      "passportNumber": "5432167"
+    },
+    "createDate": "2024-01-19T13:26:54.076",
+    "updateDate": "2024-01-19T13:26:54.076"
   },
   {
-    "uuid": "6dee35d5-e84b-4845-aed5-ed0d0daa8e4c",
-    "area": 55.6,
-    "country": "country1",
-    "city": "city1",
-    "street": "street2",
-    "number": 34,
-    "createDate": [
-      2024,
-      1,
-      14,
-      21,
-      14,
-      6,
-      428911000
-    ]
+    "uuid": "0953550a-4c67-4d3a-b95d-e7366d0c097c",
+    "name": "Isabella",
+    "surname": "Lee",
+    "sex": "FEMALE",
+    "passport": {
+      "passportSeries": "QR",
+      "passportNumber": "4321098"
+    },
+    "createDate": "2024-01-19T13:30:14.038",
+    "updateDate": "2024-01-19T13:30:14.038"
   }
 ]
 ```
 
-Ошибка выполнения (code 500):
+#### GET searchHouseByCity(String city):
 
-```text
-Error retrieving houses list
-```
-
-___
-GET-запрос по page:
+Request:
 
 ```http request
- http://localhost:8088/house?page=1
+http://localhost:8080/api/houses/search/wo
 ```
 
-Результат (code 200):
+Response:
 
 ```json
 [
   {
-    "uuid": "a0fbbcb0-74ef-43be-a626-55d5b42c9dc1",
-    "area": 33.6,
-    "country": "country1",
-    "city": "city1",
-    "street": "street1",
-    "number": 1,
-    "createDate": [
-      2024,
-      1,
-      14,
-      21,
-      13,
-      3,
-      860747000
-    ]
-  },
-  {
-    "uuid": "e0f4a6c5-b1d3-475d-83dc-98079744280d",
-    "area": 4.9,
-    "country": "country1",
-    "city": "city1",
-    "street": "street4",
-    "number": 55,
-    "createDate": [
-      2024,
-      1,
-      14,
-      21,
-      13,
-      35,
-      591357000
-    ]
-  },
-  {
-    "uuid": "6dee35d5-e84b-4845-aed5-ed0d0daa8e4c",
-    "area": 55.6,
-    "country": "country1",
-    "city": "city1",
-    "street": "street2",
-    "number": 34,
-    "createDate": [
-      2024,
-      1,
-      14,
-      21,
-      14,
-      6,
-      428911000
-    ]
-  },
-  {
-    "uuid": "34b9e030-6665-483e-a071-e43f5485951d",
-    "area": 6.5,
-    "country": "country1",
-    "city": "city1",
-    "street": "street3",
-    "number": 45,
-    "createDate": [
-      2024,
-      1,
-      14,
-      21,
-      15,
-      29,
-      637739000
-    ]
-  },
-  {
-    "uuid": "a760913d-60eb-4d4b-8dfc-4364c39d99dd",
-    "area": 88.9,
-    "country": "country1",
-    "city": "city1",
-    "street": "street7",
-    "number": 81,
-    "createDate": [
-      2024,
-      1,
-      14,
-      21,
-      16,
-      4,
-      10542000
-    ]
+    "uuid": "f291c4bb-58a0-4800-bfc8-104217051d24",
+    "area": "AreaThree",
+    "country": "Country",
+    "city": "CityTwo",
+    "street": "StreetThree",
+    "number": 43,
+    "createDate": "2024-01-19T13:17:47.442"
   }
 ]
 ```
 
-Ошибка выполнения (code 500):
-
-```text
-Error retrieving houses list
-```
-
-___
-GET-запрос по count:
-
-```http request
- http://localhost:8088/house?count=3
-```
-
-Результат (code 200):
+Empty list:
 
 ```json
-[
-  {
-    "uuid": "a0fbbcb0-74ef-43be-a626-55d5b42c9dc1",
-    "area": 33.6,
-    "country": "country1",
-    "city": "city1",
-    "street": "street1",
-    "number": 1,
-    "createDate": [
-      2024,
-      1,
-      14,
-      21,
-      13,
-      3,
-      860747000
-    ]
-  },
-  {
-    "uuid": "e0f4a6c5-b1d3-475d-83dc-98079744280d",
-    "area": 4.9,
-    "country": "country1",
-    "city": "city1",
-    "street": "street4",
-    "number": 55,
-    "createDate": [
-      2024,
-      1,
-      14,
-      21,
-      13,
-      35,
-      591357000
-    ]
-  },
-  {
-    "uuid": "6dee35d5-e84b-4845-aed5-ed0d0daa8e4c",
-    "area": 55.6,
-    "country": "country1",
-    "city": "city1",
-    "street": "street2",
-    "number": 34,
-    "createDate": [
-      2024,
-      1,
-      14,
-      21,
-      14,
-      6,
-      428911000
-    ]
-  }
-]
+{
+  "errorMessage": "List is empty!",
+  "errorCode": 404
+}
 ```
 
-Ошибка выполнения (code 500):
+#### POST create(HouseCreateDto houseCreateDto):
 
-```text
-Error retrieving houses list
-```
-
-Неверный запрос (code 400):
-
-```text
-Invalid request parameters
-```
-
-___
-POST-запрос:
+Request:
 
 ```http request
-  http://localhost:8088/house
+http://localhost:8080/api/houses
 ```
 
 Body:
 
 ```json
 {
-  "area": 343.6,
-  "country": "country1",
-  "city": "city1",
-  "street": "street6",
-  "number": 14
+  "area": "AreaOne",
+  "country": "Country",
+  "city": "City",
+  "street": "StreetOne",
+  "number": 35
 }
 ```
 
-Результат (code 200):
+Response:
 
 ```json
 {
-  "uuid": "4643b27b-aad7-48fa-a99f-6c024f3de1e9",
-  "area": 343.6,
-  "country": "country1",
-  "city": "city1",
-  "street": "street6",
-  "number": 14,
-  "createDate": [
-    2024,
-    1,
-    15,
-    1,
-    19,
-    26,
-    472405000
-  ]
+  "uuid": "ebd8b270-12ef-42f4-b8df-8944344623e3",
+  "area": "AreaOne",
+  "country": "Country",
+  "city": "City",
+  "street": "StreetOne",
+  "number": 35,
+  "createDate": "2024-01-26T00:51:48.720"
 }
 ```
 
-Ошибка выполнения (code 500):
+#### PUT update(HouseUpdateDto houseUpdateDto):
 
-```text
-House created error
-```
-
-___
-
-PUT-запрос:
+Request:
 
 ```http request
- http://localhost:8088/house
+http://localhost:8080/api/houses
 ```
 
 Body:
 
 ```json
 {
-  "uuid": "4643b27b-aad7-48fa-a99f-6c024f3de1e9",
-  "area": 363.6,
-  "country": "country",
-  "city": "city",
-  "street": "street",
-  "number": 14
+  "uuid": "ebd8b270-12ef-42f4-b8df-8944344623e3",
+  "area": "AreaTwo",
+  "country": "Country",
+  "city": "City",
+  "street": "StreetOne",
+  "number": 37
 }
 ```
 
-Результат (code 200):
+Response:
 
 ```json
 {
-  "uuid": "4643b27b-aad7-48fa-a99f-6c024f3de1e9",
-  "area": 363.6,
-  "country": "country",
-  "city": "city",
-  "street": "street",
-  "number": 14,
-  "createDate": [
-    2024,
-    1,
-    15,
-    1,
-    19,
-    26,
-    472405000
-  ]
+  "uuid": "ebd8b270-12ef-42f4-b8df-8944344623e3",
+  "area": "AreaTwo",
+  "country": "Country",
+  "city": "City",
+  "street": "StreetOne",
+  "number": 37,
+  "createDate": "2024-01-26T00:51:48.720"
 }
 ```
 
-Ошибка выполнения (code 500):
+#### PATCH patch(HouseUpdateDto houseUpdateDto):
 
-```text
-House updated error
-```
-
-___
-DELETE-запрос (code 200):
+Request:
 
 ```http request
- http://localhost:8088/house?uuid=4643b27b-aad7-48fa-a99f-6c024f3de1e9
+http://localhost:8080/api/houses
 ```
 
-Результат:
+Body:
 
-```text
-House is deleted
+```json
+{
+  "uuid": "ebd8b270-12ef-42f4-b8df-8944344623e3",
+  "area": "AreaOne"
+}
 ```
 
-Ошибка выполнения (500):
+Response:
 
-```text
-House deleted error
+```json
+{
+  "uuid": "ebd8b270-12ef-42f4-b8df-8944344623e3",
+  "area": "AreaOne",
+  "country": "Country",
+  "city": "City",
+  "street": "StreetOne",
+  "number": 0,
+  "createDate": "2024-01-26T00:51:48.720"
+}
 ```
 
-___
+#### DELETE delete(UUID uuid):
+
+Request:
+
+```http request
+http://localhost:8080/api/houses/0953550a-4c67-4d3a-b95d-e7366d0c097c
+```
+
+__
+
+### PersonController
+
+#### GET getAll(Integer offset, Integer limit):
+
+Default offset = 0
+Default limit = 15
+
+Request:
+
+```http request
+http://localhost:8080/api/persons
+```
+
+Response:
+
+```json
+[
+  {
+    "uuid": "33447590-3f82-4ae7-a9f6-4b140475c18f",
+    "name": "Sophia",
+    "surname": "Johnson",
+    "sex": "MALE",
+    "passport": {
+      "passportSeries": "AB",
+      "passportNumber": "1234567"
+    },
+    "createDate": "2024-01-19T13:23:18.356",
+    "updateDate": "2024-01-19T13:23:18.356"
+  },
+  {
+    "uuid": "54b9906a-8747-4af7-b641-2a803849f2d1",
+    "name": "Noah",
+    "surname": "Smith",
+    "sex": "FEMALE",
+    "passport": {
+      "passportSeries": "CD",
+      "passportNumber": "9876543"
+    },
+    "createDate": "2024-01-19T13:24:19.361",
+    "updateDate": "2024-01-19T13:24:19.361"
+  },
+  {
+    "uuid": "6c19889a-bb5a-4125-b168-6a1b9c4dd418",
+    "name": "Olivia",
+    "surname": "Brown",
+    "sex": "FEMALE",
+    "passport": {
+      "passportSeries": "EF",
+      "passportNumber": "2468101"
+    },
+    "createDate": "2024-01-19T13:25:00.894",
+    "updateDate": "2024-01-19T13:25:00.894"
+  },
+  {
+    "uuid": "7736bed0-5b5c-4fbc-a919-e56f947a59b7",
+    "name": "Liam",
+    "surname": "Davis",
+    "sex": "MALE",
+    "passport": {
+      "passportSeries": "GH",
+      "passportNumber": "7654321"
+    },
+    "createDate": "2024-01-19T13:26:03.433",
+    "updateDate": "2024-01-19T13:26:03.433"
+  },
+  {
+    "uuid": "d21df8c3-2771-4dcb-9d4d-5f7a971b0c07",
+    "name": "Emma",
+    "surname": "Wilson",
+    "sex": "FEMALE",
+    "passport": {
+      "passportSeries": "IJ",
+      "passportNumber": "5432167"
+    },
+    "createDate": "2024-01-19T13:26:54.076",
+    "updateDate": "2024-01-19T13:26:54.076"
+  },
+  {
+    "uuid": "74c3452d-ec27-4cb7-9cd5-e177607bf75c",
+    "name": "Jackson",
+    "surname": "Martinez",
+    "sex": "MALE",
+    "passport": {
+      "passportSeries": "KL",
+      "passportNumber": "2109876"
+    },
+    "createDate": "2024-01-19T13:27:48.176",
+    "updateDate": "2024-01-19T13:27:48.176"
+  },
+  {
+    "uuid": "cd7c5f0f-337b-4db1-8bc0-794d0d98685d",
+    "name": "Ava",
+    "surname": "Anderson",
+    "sex": "FEMALE",
+    "passport": {
+      "passportSeries": "MN",
+      "passportNumber": "6789012"
+    },
+    "createDate": "2024-01-19T13:28:35.280",
+    "updateDate": "2024-01-19T13:28:35.280"
+  },
+  {
+    "uuid": "1e390f7a-2181-42cb-af3d-62fe2a263d08",
+    "name": "Lucas",
+    "surname": "Thompson",
+    "sex": "MALE",
+    "passport": {
+      "passportSeries": "OP",
+      "passportNumber": "0987654"
+    },
+    "createDate": "2024-01-19T13:29:24.912",
+    "updateDate": "2024-01-19T13:29:24.912"
+  },
+  {
+    "uuid": "0953550a-4c67-4d3a-b95d-e7366d0c097c",
+    "name": "Isabella",
+    "surname": "Lee",
+    "sex": "FEMALE",
+    "passport": {
+      "passportSeries": "QR",
+      "passportNumber": "4321098"
+    },
+    "createDate": "2024-01-19T13:30:14.038",
+    "updateDate": "2024-01-19T13:30:14.038"
+  },
+  {
+    "uuid": "f8cba101-e82b-4e43-8eeb-3c5fac1e5f45",
+    "name": "Ethan",
+    "surname": "Harris",
+    "sex": "MALE",
+    "passport": {
+      "passportSeries": "ST",
+      "passportNumber": "8765432"
+    },
+    "createDate": "2024-01-19T13:31:19.378",
+    "updateDate": "2024-01-19T13:31:19.378"
+  }
+]
+```
+
+Request:
+
+```http request
+http://localhost:8080/api/persons?offset=1&limit=2
+```
+
+Response:
+
+```json
+[
+  {
+    "uuid": "54b9906a-8747-4af7-b641-2a803849f2d1",
+    "name": "Noah",
+    "surname": "Smith",
+    "sex": "FEMALE",
+    "passport": {
+      "passportSeries": "CD",
+      "passportNumber": "9876543"
+    },
+    "createDate": "2024-01-19T13:24:19.361",
+    "updateDate": "2024-01-19T13:24:19.361"
+  },
+  {
+    "uuid": "6c19889a-bb5a-4125-b168-6a1b9c4dd418",
+    "name": "Olivia",
+    "surname": "Brown",
+    "sex": "FEMALE",
+    "passport": {
+      "passportSeries": "EF",
+      "passportNumber": "2468101"
+    },
+    "createDate": "2024-01-19T13:25:00.894",
+    "updateDate": "2024-01-19T13:25:00.894"
+  }
+]
+```
+
+#### GET getByUuid(UUID uuid):
+
+Request:
+
+```http request
+http://localhost:8080/api/persons/54b9906a-8747-4af7-b641-2a803849f2d1
+```
+
+Response:
+
+```json
+{
+  "uuid": "54b9906a-8747-4af7-b641-2a803849f2d1",
+  "name": "Noah",
+  "surname": "Smith",
+  "sex": "FEMALE",
+  "passport": {
+    "passportSeries": "CD",
+    "passportNumber": "9876543"
+  },
+  "createDate": "2024-01-19T13:24:19.361",
+  "updateDate": "2024-01-19T13:24:19.361"
+}
+```
+
+#### GET getAllHouses(UUID uuid):
+
+GET для всех House, владельцем которых является Person
+
+Request:
+
+```http request
+http://localhost:8080/api/persons/houses/cd7c5f0f-337b-4db1-8bc0-794d0d98685d
+```
+
+Response:
+
+```json
+[
+  {
+    "uuid": "71d9d979-48d9-420c-9454-912225476fef",
+    "area": "AreaTwo",
+    "country": "Country",
+    "city": "City",
+    "street": "StreetTwo",
+    "number": 56,
+    "createDate": "2024-01-19T13:17:12.830"
+  },
+  {
+    "uuid": "7c204d2c-b694-4dc4-a73a-9fa99b02973f",
+    "area": "AreaTwo",
+    "country": "Country",
+    "city": "City",
+    "street": "StreetOne",
+    "number": 98,
+    "createDate": "2024-01-19T13:18:17.079"
+  }
+]
+```
+
+#### GET searchHouseBySurname(String surname):
+
+Request:
+
+```http request
+http://localhost:8080/api/persons/search/s
+```
+
+Response:
+
+```json
+[
+  {
+    "uuid": "33447590-3f82-4ae7-a9f6-4b140475c18f",
+    "name": "Sophia",
+    "surname": "Johnson",
+    "sex": "MALE",
+    "passport": {
+      "passportSeries": "AB",
+      "passportNumber": "1234567"
+    },
+    "createDate": "2024-01-19T13:23:18.356",
+    "updateDate": "2024-01-19T13:23:18.356"
+  },
+  {
+    "uuid": "7736bed0-5b5c-4fbc-a919-e56f947a59b7",
+    "name": "Liam",
+    "surname": "Davis",
+    "sex": "MALE",
+    "passport": {
+      "passportSeries": "GH",
+      "passportNumber": "7654321"
+    },
+    "createDate": "2024-01-19T13:26:03.433",
+    "updateDate": "2024-01-19T13:26:03.433"
+  },
+  {
+    "uuid": "d21df8c3-2771-4dcb-9d4d-5f7a971b0c07",
+    "name": "Emma",
+    "surname": "Wilson",
+    "sex": "FEMALE",
+    "passport": {
+      "passportSeries": "IJ",
+      "passportNumber": "5432167"
+    },
+    "createDate": "2024-01-19T13:26:54.076",
+    "updateDate": "2024-01-19T13:26:54.076"
+  },
+  {
+    "uuid": "cd7c5f0f-337b-4db1-8bc0-794d0d98685d",
+    "name": "Ava",
+    "surname": "Anderson",
+    "sex": "FEMALE",
+    "passport": {
+      "passportSeries": "MN",
+      "passportNumber": "6789012"
+    },
+    "createDate": "2024-01-19T13:28:35.280",
+    "updateDate": "2024-01-19T13:28:35.280"
+  },
+  {
+    "uuid": "1e390f7a-2181-42cb-af3d-62fe2a263d08",
+    "name": "Lucas",
+    "surname": "Thompson",
+    "sex": "MALE",
+    "passport": {
+      "passportSeries": "OP",
+      "passportNumber": "0987654"
+    },
+    "createDate": "2024-01-19T13:29:24.912",
+    "updateDate": "2024-01-19T13:29:24.912"
+  },
+  {
+    "uuid": "f8cba101-e82b-4e43-8eeb-3c5fac1e5f45",
+    "name": "Ethan",
+    "surname": "Harris",
+    "sex": "MALE",
+    "passport": {
+      "passportSeries": "ST",
+      "passportNumber": "8765432"
+    },
+    "createDate": "2024-01-19T13:31:19.378",
+    "updateDate": "2024-01-19T13:31:19.378"
+  }
+]
+```
+
+Empty list:
+
+```json
+{
+  "errorMessage": "List is empty!",
+  "errorCode": 404
+}
+```
+
+#### POST create(HouseCreateDto houseCreateDto):
+
+Request:
+
+```http request
+http://localhost:8080/api/persons
+```
+
+Body:
+
+```json
+{
+  "name": "Noah",
+  "surname": "Smith",
+  "sex": "FEMALE",
+  "passport": {
+    "passportSeries": "CD",
+    "passportNumber": "9650991"
+  },
+  "homeUuid": "6d316b83-126e-4090-bc81-4125a68923c0"
+}
+```
+
+Response:
+
+```json
+{
+  "uuid": "f3478035-aa97-4e10-89dc-f1edaed59726",
+  "name": "Noah",
+  "surname": "Smith",
+  "sex": "FEMALE",
+  "passport": {
+    "passportSeries": "CD",
+    "passportNumber": "9650991"
+  },
+  "createDate": "2024-01-26T00:55:26.071",
+  "updateDate": "2024-01-26T00:55:26.071"
+}
+```
+
+#### PUT update(PersonUpdateDto personUpdateDto):
+
+Request:
+
+```http request
+http://localhost:8080/api/persons
+```
+
+Body:
+
+```json
+{
+  "uuid": "06d562e4-4bfd-4897-88b7-5d00acf6ac26",
+  "name": "Noa",
+  "surname": "Smith",
+  "sex": "MALE",
+  "passport": {
+    "passportSeries": "CD",
+    "passportNumber": "9650991"
+  },
+  "homeUuid": "7c204d2c-b694-4dc4-a73a-9fa99b02973f"
+}
+```
+
+Response:
+
+```json
+{
+  "uuid": "f3478035-aa97-4e10-89dc-f1edaed59726",
+  "name": "Noa",
+  "surname": "Smit",
+  "sex": "MALE",
+  "passport": {
+    "passportSeries": "CD",
+    "passportNumber": "9650991"
+  },
+  "createDate": "2024-01-26T00:55:26.071",
+  "updateDate": "2024-01-26T00:55:26.071"
+}
+```
+
+#### PATCH patch(PersonUpdateDto personUpdateDto):
+
+Request:
+
+```http request
+http://localhost:8080/api/persons
+```
+
+Body:
+
+```json
+{
+  "uuid": "f3478035-aa97-4e10-89dc-f1edaed59726",
+  "name": "NoaM",
+  "surname": "SmitD"
+}
+```
+
+Response:
+
+```json
+{
+  "uuid": "f3478035-aa97-4e10-89dc-f1edaed59726",
+  "name": "NoaM",
+  "surname": "SmitD",
+  "sex": "MALE",
+  "passport": {
+    "passportSeries": "CD",
+    "passportNumber": "9650991"
+  },
+  "createDate": "2024-01-26T00:55:26.071",
+  "updateDate": "2024-01-26T00:56:44.462"
+}
+```
+
+#### DELETE delete(UUID uuid):
+
+Request:
+
+```http request
+http://localhost:8080/api/persons/b6baf98c-ea5a-48ec-a4e5-645998c1cceb
+```
+
+__
 
 

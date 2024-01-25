@@ -11,7 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class HouseCreateDto {
 
-    private double area;
+    private String area;
     private String country;
     private String city;
     private String street;

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="007" author="vitikova" dbms="postgresql">
+        <sql>
+            INSERT INTO "person" ("create_date", "house_id", "id", "update_date", "uuid", "name", "passport_number",
+                                  "passport_series", "sex", "surname")
+            VALUES ('2024-01-19 13:23:18.356477', 1, 1, '2024-01-19 13:23:18.356477',
+                    '33447590-3f82-4ae7-a9f6-4b140475c18f', 'Sophia', '1234567', 'AB', 'MALE', 'Johnson'),
+                   ('2024-01-19 13:24:19.361614', 2, 2, '2024-01-19 13:24:19.361614',
+                    '54b9906a-8747-4af7-b641-2a803849f2d1', 'Noah', '9876543', 'CD', 'FEMALE', 'Smith'),
+                   ('2024-01-19 13:25:00.894308', 1, 3, '2024-01-19 13:25:00.894308',
+                    '6c19889a-bb5a-4125-b168-6a1b9c4dd418', 'Olivia', '2468101', 'EF', 'FEMALE', 'Brown'),
+                   ('2024-01-19 13:26:03.433571', 3, 4, '2024-01-19 13:26:03.433571',
+                    '7736bed0-5b5c-4fbc-a919-e56f947a59b7', 'Liam', '7654321', 'GH', 'MALE', 'Davis'),
+                   ('2024-01-19 13:26:54.07691', 3, 5, '2024-01-19 13:26:54.07691',
+                    'd21df8c3-2771-4dcb-9d4d-5f7a971b0c07', 'Emma', '5432167', 'IJ', 'FEMALE', 'Wilson'),
+                   ('2024-01-19 13:27:48.176436', 4, 6, '2024-01-19 13:27:48.176436',
+                    '74c3452d-ec27-4cb7-9cd5-e177607bf75c', 'Jackson', '2109876', 'KL', 'MALE', 'Martinez'),
+                   ('2024-01-19 13:28:35.280602', 5, 7, '2024-01-19 13:28:35.280602',
+                    'cd7c5f0f-337b-4db1-8bc0-794d0d98685d', 'Ava', '6789012', 'MN', 'FEMALE', 'Anderson'),
+                   ('2024-01-19 13:29:24.912137', 4, 8, '2024-01-19 13:29:24.912137',
+                    '1e390f7a-2181-42cb-af3d-62fe2a263d08', 'Lucas', '0987654', 'OP', 'MALE', 'Thompson'),
+                   ('2024-01-19 13:30:14.038769', 3, 9, '2024-01-19 13:30:14.038769',
+                    '0953550a-4c67-4d3a-b95d-e7366d0c097c', 'Isabella', '4321098', 'QR', 'FEMALE', 'Lee'),
+                   ('2024-01-19 13:31:19.378083', 1, 10, '2024-01-19 13:31:19.378083',
+                    'f8cba101-e82b-4e43-8eeb-3c5fac1e5f45', 'Ethan', '8765432', 'ST', 'MALE', 'Harris');
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

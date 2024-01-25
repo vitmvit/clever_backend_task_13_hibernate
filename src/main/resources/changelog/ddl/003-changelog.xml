@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="003" author="vitikova" dbms="postgresql">
+        <sql>
+
+            CREATE TABLE "public"."person"
+            (
+                "id"              bigint DEFAULT nextval('person_id_seq') NOT NULL,
+                "uuid"            uuid                                    NOT NULL,
+                "name"            character varying(255)                  NOT NULL,
+                "surname"         character varying(255)                  NOT NULL,
+                "sex"             character varying(255)                  NOT NULL,
+                "passport_series" character varying(255),
+                "passport_number" character varying(255),
+                "create_date"     timestamp(6),
+                "update_date"     timestamp(6),
+                "house_id"        bigint                                  NOT NULL,
+                CONSTRAINT "person_passport_series_passport_number_key" UNIQUE ("passport_series", "passport_number"),
+                CONSTRAINT "person_pkey" PRIMARY KEY ("id"),
+                CONSTRAINT "person_uuid_key" UNIQUE ("uuid")
+            ) WITH (oids = false);
+        </sql>
+    </changeSet>
+</databaseChangeLog>

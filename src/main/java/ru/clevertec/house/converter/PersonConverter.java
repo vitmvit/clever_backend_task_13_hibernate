@@ -8,7 +8,7 @@ import ru.clevertec.house.model.dto.create.PersonCreateDto;
 import ru.clevertec.house.model.dto.update.PersonUpdateDto;
 import ru.clevertec.house.model.entity.Person;
 
-@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface PersonConverter {
     PersonDto convert(Person source);
 

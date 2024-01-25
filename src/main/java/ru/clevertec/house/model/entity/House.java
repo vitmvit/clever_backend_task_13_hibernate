@@ -1,35 +1,40 @@
 package ru.clevertec.house.model.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.FieldNameConstants;
-import ru.clevertec.house.model.entity.parent.BaseModel;
+import org.hibernate.annotations.CreationTimestamp;
+import ru.clevertec.house.listener.HouseListener;
+import ru.clevertec.house.model.entity.parent.UuidModel;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Entity
 @Getter
 @Setter
-@AllArgsConstructor
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 @FieldNameConstants
-public class House extends BaseModel {
+@Entity(name = "house")
+@EntityListeners(HouseListener.class)
+public class House extends UuidModel {
 
-    private double area;
+    private String area;
     private String country;
     private String city;
     private String street;
     private int number;
+
+    @CreationTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "create_date")
     private LocalDateTime createDate;
 
-    @OneToMany(mappedBy = "home", cascade = CascadeType.PERSIST)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "home", cascade = CascadeType.ALL)
     private List<Person> residents;
 
-    @ManyToMany(cascade = CascadeType.PERSIST)
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "house_owner",
             joinColumns = @JoinColumn(name = "house_id"),
