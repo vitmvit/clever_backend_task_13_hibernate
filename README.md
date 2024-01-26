@@ -115,6 +115,12 @@
 2. Spring Data Repositories.
 3. Spring Data JPA.
 
+# Инструкция по запуску
+
+Для запуска Tomcat 10.1.18, создать артефакт и указать его в разделе deployment
+
+Перед запуском необходимо создать базу данны clever_lab_task_13 (параметры можно изменить в application.yml)
+
 # Реализация
 
 ## CRUD операции:
@@ -887,7 +893,7 @@ Response:
 Request:
 
 ```http request
-http://localhost:8080/api/persons/b6baf98c-ea5a-48ec-a4e5-645998c1cceb
+http://localhost:8080/api/persons/7736bed0-5b5c-4fbc-a919-e56f947a59b7
 ```
 
 __

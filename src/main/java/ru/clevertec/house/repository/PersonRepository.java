@@ -7,15 +7,15 @@ import java.util.UUID;
 
 public interface PersonRepository {
 
-    Person getByUUID(UUID uuid);
+    Person getByUuid(UUID uuid);
 
     List<Person> getAll(int limit, int offset);
 
-    List<Person> getByCityContaining(String surname);
+    List<Person> getBySurnameContaining(String surname);
 
     Person create(Person person);
 
     Person update(Person person);
 
-    void deleteByUUID(UUID uuid);
+    void deleteByUuid(UUID uuid);
 }

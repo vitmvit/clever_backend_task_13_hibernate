@@ -6,7 +6,6 @@
 
     <changeSet id="003" author="vitikova" dbms="postgresql">
         <sql>
-
             CREATE TABLE "public"."person"
             (
                 "id"              bigint DEFAULT nextval('person_id_seq') NOT NULL,

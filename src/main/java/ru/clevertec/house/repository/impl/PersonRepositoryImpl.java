@@ -7,6 +7,7 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
 import lombok.AllArgsConstructor;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import ru.clevertec.house.model.entity.Person;
@@ -23,8 +24,10 @@ public class PersonRepositoryImpl implements PersonRepository {
     @PersistenceContext
     private final EntityManager entityManager;
 
+    private final JdbcTemplate jdbcTemplate;
+
     @Override
-    public Person getByUUID(UUID uuid) {
+    public Person getByUuid(UUID uuid) {
         TypedQuery<Person> query = entityManager.createQuery("SELECT p FROM person p WHERE p.uuid = :uuid", Person.class);
         query.setParameter("uuid", uuid);
         return query.getSingleResult();
@@ -43,7 +46,7 @@ public class PersonRepositoryImpl implements PersonRepository {
     }
 
     @Override
-    public List<Person> getByCityContaining(String surname) {
+    public List<Person> getBySurnameContaining(String surname) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Person> criteriaQuery = criteriaBuilder.createQuery(Person.class);
         Root<Person> rootEntry = criteriaQuery.from(Person.class);
@@ -66,8 +69,7 @@ public class PersonRepositoryImpl implements PersonRepository {
     }
 
     @Override
-    public void deleteByUUID(UUID uuid) {
-        Person person = entityManager.find(Person.class, uuid);
-        entityManager.remove(person);
+    public void deleteByUuid(UUID uuid) {
+        jdbcTemplate.update("DELETE FROM person WHERE uuid = ?", uuid);
     }
 }

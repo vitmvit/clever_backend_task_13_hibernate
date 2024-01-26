@@ -1,7 +1,10 @@
 package ru.clevertec.house.model.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.FieldNameConstants;
 import ru.clevertec.house.constant.Sex;
 import ru.clevertec.house.listener.PersonListener;
@@ -11,7 +14,6 @@ import java.util.List;
 
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldNameConstants

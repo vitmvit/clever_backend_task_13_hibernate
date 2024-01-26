@@ -26,7 +26,7 @@ public class HouseRepositoryImpl implements HouseRepository {
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public House getByUUID(UUID uuid) {
+    public House getByUuid(UUID uuid) {
         TypedQuery<House> query = entityManager.createQuery("SELECT h FROM house h WHERE h.uuid = :uuid", House.class);
         query.setParameter("uuid", uuid);
         return query.getSingleResult();
@@ -45,7 +45,7 @@ public class HouseRepositoryImpl implements HouseRepository {
     }
 
     @Override
-    public List<House> getBySurnameContaining(String city) {
+    public List<House> getByCityContaining(String city) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<House> criteriaQuery = criteriaBuilder.createQuery(House.class);
         Root<House> rootEntry = criteriaQuery.from(House.class);
@@ -68,7 +68,7 @@ public class HouseRepositoryImpl implements HouseRepository {
     }
 
     @Override
-    public void deleteByUUID(UUID uuid) {
+    public void deleteByUuid(UUID uuid) {
         jdbcTemplate.update("DELETE FROM house WHERE uuid = ?", uuid);
     }
 }

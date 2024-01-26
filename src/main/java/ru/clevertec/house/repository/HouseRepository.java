@@ -7,17 +7,15 @@ import java.util.UUID;
 
 public interface HouseRepository {
 
-    House getByUUID(UUID uuid);
+    House getByUuid(UUID uuid);
 
     List<House> getAll(int limit, int offset);
 
-    List<House> getBySurnameContaining(String city);
+    List<House> getByCityContaining(String city);
 
     House create(House house);
 
     House update(House house);
 
-    void deleteByUUID(UUID uuid);
-
-
+    void deleteByUuid(UUID uuid);
 }

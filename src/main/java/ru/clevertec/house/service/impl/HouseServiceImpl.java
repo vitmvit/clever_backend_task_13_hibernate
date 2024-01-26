@@ -46,7 +46,7 @@ public class HouseServiceImpl implements HouseService {
      */
     @Override
     public HouseDto getByUuid(UUID uuid) {
-        return houseConverter.convert(houseRepository.getByUUID(uuid));
+        return houseConverter.convert(houseRepository.getByUuid(uuid));
     }
 
     /**
@@ -73,7 +73,7 @@ public class HouseServiceImpl implements HouseService {
      */
     @Override
     public List<HouseDto> searchByCity(String city) {
-        var houseList = houseRepository.getBySurnameContaining(city);
+        var houseList = houseRepository.getByCityContaining(city);
         houseList.stream().findAny().orElseThrow(EmptyListException::new);
         return houseList.stream().map(houseConverter::convert).collect(Collectors.toList());
     }
@@ -99,7 +99,7 @@ public class HouseServiceImpl implements HouseService {
      */
     @Override
     public HouseDto update(HouseUpdateDto dto) {
-        var house = houseRepository.getByUUID(dto.getUuid());
+        var house = houseRepository.getByUuid(dto.getUuid());
         houseConverter.merge(house, dto);
         return houseConverter.convert(houseRepository.update(house));
     }
@@ -115,7 +115,7 @@ public class HouseServiceImpl implements HouseService {
      */
     @Override
     public HouseDto patch(HouseUpdateDto houseUpdateDto) {
-        var house = houseRepository.getByUUID(houseUpdateDto.getUuid());
+        var house = houseRepository.getByUuid(houseUpdateDto.getUuid());
         try {
             patcher.housePatcher(house, houseConverter.convert(houseUpdateDto));
             houseRepository.update(house);
@@ -132,7 +132,7 @@ public class HouseServiceImpl implements HouseService {
      */
     @Override
     public void delete(UUID uuid) {
-        houseRepository.deleteByUUID(uuid);
+        houseRepository.deleteByUuid(uuid);
     }
 
     /**
@@ -144,7 +144,7 @@ public class HouseServiceImpl implements HouseService {
      */
     @Override
     public List<PersonDto> getAllResidents(UUID uuid) {
-        var house = houseRepository.getByUUID(uuid);
+        var house = houseRepository.getByUuid(uuid);
         return house.getResidents().isEmpty()
                 ? List.of()
                 : house.getResidents().stream().map(personConverter::convert).collect(Collectors.toList());

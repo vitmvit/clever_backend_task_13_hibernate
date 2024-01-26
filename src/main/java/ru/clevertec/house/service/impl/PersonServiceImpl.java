@@ -43,7 +43,7 @@ public class PersonServiceImpl implements PersonService {
      */
     @Override
     public PersonDto getByUuid(UUID uuid) {
-        return personConverter.convert(personRepository.getByUUID(uuid));
+        return personConverter.convert(personRepository.getByUuid(uuid));
     }
 
     /**
@@ -70,7 +70,7 @@ public class PersonServiceImpl implements PersonService {
      */
     @Override
     public List<PersonDto> searchBySurname(String surname) {
-        var personList = personRepository.getByCityContaining(surname);
+        var personList = personRepository.getBySurnameContaining(surname);
         personList.stream().findAny().orElseThrow(EmptyListException::new);
         return personList.stream().map(personConverter::convert).collect(Collectors.toList());
     }
@@ -84,7 +84,7 @@ public class PersonServiceImpl implements PersonService {
     @Override
     public PersonDto create(PersonCreateDto dto) {
         var person = personConverter.convert(dto);
-        person.setHome(houseRepository.getByUUID(dto.getHomeUuid()));
+        person.setHome(houseRepository.getByUuid(dto.getHomeUuid()));
         return personConverter.convert(personRepository.create(person));
     }
 
@@ -97,7 +97,7 @@ public class PersonServiceImpl implements PersonService {
      */
     @Override
     public PersonDto update(PersonUpdateDto dto) {
-        var person = personRepository.getByUUID(dto.getUuid());
+        var person = personRepository.getByUuid(dto.getUuid());
         personConverter.merge(person, dto);
         return personConverter.convert(personRepository.update(person));
     }
@@ -113,7 +113,7 @@ public class PersonServiceImpl implements PersonService {
      */
     @Override
     public PersonDto patch(PersonUpdateDto personUpdateDto) {
-        var person = personRepository.getByUUID(personUpdateDto.getUuid());
+        var person = personRepository.getByUuid(personUpdateDto.getUuid());
         try {
             patcher.personPatcher(person, personConverter.convert(personUpdateDto));
             personRepository.update(person);
@@ -130,7 +130,7 @@ public class PersonServiceImpl implements PersonService {
      */
     @Override
     public void delete(UUID uuid) {
-        personRepository.deleteByUUID(uuid);
+        personRepository.deleteByUuid(uuid);
     }
 
     /**
@@ -142,7 +142,7 @@ public class PersonServiceImpl implements PersonService {
      */
     @Override
     public List<HouseDto> getAllHouses(UUID uuid) {
-        var person = personRepository.getByUUID(uuid);
+        var person = personRepository.getByUuid(uuid);
         return person.getHouses().isEmpty()
                 ? List.of()
                 : person.getHouses().stream().map(houseConverter::convert).collect(Collectors.toList());
