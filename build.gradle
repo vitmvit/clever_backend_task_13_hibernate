@@ -42,28 +42,18 @@ dependencies {
     implementation "org.springframework:spring-jdbc:${springVersion}"
     implementation "org.springframework:spring-webmvc:${springVersion}"
     implementation "org.springframework:spring-orm:${springVersion}"
-
     implementation "org.postgresql:postgresql:${postgresVersion}"
-
     implementation "org.hibernate.orm:hibernate-core:${hibernateVersion}"
     implementation "org.hibernate.validator:hibernate-validator:${hibernateValidatorVersion}"
-
     implementation "javax.validation:validation-api:${javaxValidationVersion}"
-
     implementation "javax.el:javax.el-api:${javaxElVersion}"
     implementation "org.glassfish:javax.el:${javaxElVersion}"
-
     implementation "com.zaxxer:HikariCP:${hikariCPVersion}"
-
     implementation "org.liquibase:liquibase-core:${liquidbaseVersion}"
-
     implementation "org.yaml:snakeyaml:${snakeYamlVersion}"
-
     implementation "org.mapstruct:mapstruct:${mapstructVersion}"
-
     implementation "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
     implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${jacksonVersion}"
-
     implementation "org.slf4j:slf4j-api:${slf4jVersion}"
     implementation "org.slf4j:slf4j-simple:${slf4jVersion}"
 
@@ -72,15 +62,12 @@ dependencies {
     compileOnly "jakarta.servlet:jakarta.servlet-api:${jakartaServletVersion}"
 
     testImplementation "org.springframework:spring-test:${springVersion}"
-
     testImplementation "com.h2database:h2:${h2databaseVersion}"
-
     testImplementation "org.mockito:mockito-junit-jupiter:${mockitoVersion}"
-
     testImplementation "org.assertj:assertj-core:${assertJVersion}"
-
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
     testImplementation("org.junit.jupiter:junit-jupiter-params:${junitVersion}")
+
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
 
     annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
