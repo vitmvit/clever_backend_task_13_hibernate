@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="005" author="vitikova" dbms="postgresql">
+        <sql>
+            ALTER TABLE ONLY "public"."house_owner"
+                ADD CONSTRAINT "fk_house_owner_id_to_id" FOREIGN KEY (house_id) REFERENCES house (id) NOT DEFERRABLE;
+            ALTER TABLE ONLY "public"."house_owner"
+                ADD CONSTRAINT "fk_owner_house_id_to_id" FOREIGN KEY (person_id) REFERENCES person (id) NOT DEFERRABLE;
+            ALTER TABLE ONLY "public"."person"
+                ADD CONSTRAINT "fk_home_resident_id_to_id" FOREIGN KEY (house_id) REFERENCES house (id) NOT DEFERRABLE;
+        </sql>
+    </changeSet>
+</databaseChangeLog>

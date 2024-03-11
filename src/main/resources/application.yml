@@ -1,0 +1,22 @@
+server:
+  port: 8080
+servlet:
+  context-path: /
+
+database:
+  driver: org.postgresql.Driver
+  url: jdbc:postgresql://localhost:5432/clever_lab_task_13
+  user: root
+  password: root
+hibernate:
+  transaction:
+    jta:
+      platform: org.hibernate.service.jta.platform.internal.JBossStandAloneJtaPlatform
+  ogm:
+    datastore:
+      provider: infinispan
+  use_sql_comments: true
+  show_sql: true
+  format_sql: true
+pagination:
+  limit: 15
