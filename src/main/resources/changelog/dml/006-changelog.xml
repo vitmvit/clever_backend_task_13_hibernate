@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="006" author="vitikova" dbms="postgresql">
+        <sql>
+            INSERT INTO "house" ("number", "create_date", "id", "uuid", "area", "city", "country", "street")
+            VALUES (19, '2024-01-19 13:16:13.992677', 1, '6d316b83-126e-4090-bc81-4125a68923c0', 'AreaOne', 'CityOne',
+                    'Country', 'StreetOne'),
+                   (56, '2024-01-19 13:17:12.830255', 2, '71d9d979-48d9-420c-9454-912225476fef', 'AreaTwo', 'City',
+                    'Country', 'StreetTwo'),
+                   (43, '2024-01-19 13:17:47.442394', 3, 'f291c4bb-58a0-4800-bfc8-104217051d24', 'AreaThree', 'CityTwo',
+                    'Country', 'StreetThree'),
+                   (98, '2024-01-19 13:18:17.0791', 4, '7c204d2c-b694-4dc4-a73a-9fa99b02973f', 'AreaTwo', 'City',
+                    'Country', 'StreetOne'),
+                   (13, '2024-01-19 13:18:39.91152', 5, 'b6baf98c-ea5a-48ec-a4e5-645998c1cceb', 'AreaOne', 'City',
+                    'Country', 'StreetOne');
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>
