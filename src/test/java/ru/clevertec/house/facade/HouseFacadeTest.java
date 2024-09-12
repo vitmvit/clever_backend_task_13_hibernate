@@ -1,4 +1,4 @@
-package ru.clevertec.house.service;
+package ru.clevertec.house.facade;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -7,33 +7,43 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import ru.clevertec.house.converter.HouseConverter;
+import ru.clevertec.house.converter.PersonConverter;
+import ru.clevertec.house.facade.impl.HouseFacadeImpl;
 import ru.clevertec.house.model.entity.House;
 import ru.clevertec.house.model.entity.parent.BaseModel;
 import ru.clevertec.house.model.entity.parent.UuidModel;
-import ru.clevertec.house.repository.HouseRepository;
-import ru.clevertec.house.service.impl.HouseServiceImpl;
+import ru.clevertec.house.service.HouseService;
 import ru.clevertec.house.util.HouseTestBuilder;
 import ru.clevertec.house.util.Patcher;
+import ru.clevertec.house.util.PersonTestBuilder;
 
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.*;
 import static ru.clevertec.house.constant.Constant.LIMIT;
 import static ru.clevertec.house.constant.Constant.OFFSET;
 
 @ExtendWith(MockitoExtension.class)
-public class HouseServiceTest {
+public class HouseFacadeTest {
 
     @Mock
-    private HouseRepository houseRepository;
+    private HouseService houseService;
+
+    @Mock
+    private HouseConverter houseConverter;
+
+    @Mock
+    private PersonConverter personConverter;
 
     @Mock
     private Patcher patcher;
 
     @InjectMocks
-    private HouseServiceImpl houseService;
+    private HouseFacadeImpl houseFacade;
 
     @Captor
     private ArgumentCaptor<House> argumentCaptor;
@@ -41,11 +51,13 @@ public class HouseServiceTest {
     @Test
     void getByUuidShouldReturnExpectedHouseWhenFound() {
         var expected = HouseTestBuilder.builder().build().buildHouse();
+        var houseDto = HouseTestBuilder.builder().build().buildHouseDto();
         var uuid = expected.getUuid();
 
-        when(houseRepository.getByUuid(uuid)).thenReturn(expected);
+        when(houseService.getByUuid(uuid)).thenReturn(expected);
+        when(houseConverter.convert(expected)).thenReturn(houseDto);
 
-        var actual = houseService.getByUuid(uuid);
+        var actual = houseFacade.getByUuid(uuid);
 
         assertThat(actual)
                 .hasFieldOrPropertyWithValue(UuidModel.Fields.uuid, expected.getUuid())
@@ -57,83 +69,73 @@ public class HouseServiceTest {
 
     @Test
     void getAllShouldReturnExpectedListHouses() {
-        when(houseRepository.getAll(OFFSET, LIMIT)).thenReturn(List.of());
+        when(houseService.getAll(OFFSET, LIMIT)).thenReturn(List.of());
 
-        houseService.getAll(OFFSET, LIMIT);
+        houseFacade.getAll(OFFSET, LIMIT);
 
-        verify(houseRepository).getAll(OFFSET, LIMIT);
-        verifyNoMoreInteractions(houseRepository);
+        verify(houseService).getAll(OFFSET, LIMIT);
+        verifyNoMoreInteractions(houseService);
     }
 
     @Test
     void getAllShouldReturnEmptyPageWhenEmptyPageHouses() {
-        when(houseRepository.getAll(OFFSET, LIMIT)).thenReturn(List.of());
+        when(houseService.getAll(OFFSET, LIMIT)).thenReturn(List.of());
 
-        var actualList = houseService.getAll(OFFSET, LIMIT);
+        var actualList = houseFacade.getAll(OFFSET, LIMIT);
 
         assertEquals(0, actualList.size());
-        verify(houseRepository, times(1)).getAll(OFFSET, LIMIT);
+        verify(houseService, times(1)).getAll(OFFSET, LIMIT);
     }
 
     @Test
-    void getAllResidentsShouldReturnExpectedListPersons() {
+    void getAllResidentsShouldReturnExpectedListPerson() {
         var uuid = HouseTestBuilder.builder().build().getUuid();
-        var expected = HouseTestBuilder.builder().build().buildHouse();
+        var expectedPersonList = PersonTestBuilder.builder().build().buildListPerson();
 
-        when(houseRepository.getByUuid(uuid)).thenReturn(expected);
+        when(houseService.getAllResidents(uuid)).thenReturn(expectedPersonList);
 
-        var actual = houseService.getAllResidents(uuid);
+        var actual = houseFacade.getAllResidents(uuid);
 
         assertEquals(2, actual.size());
-        verify(houseRepository).getByUuid(uuid);
     }
 
     @Test
     void createShouldInvokeRepositoryWithoutHouseId() {
         var houseToSave = HouseTestBuilder.builder().withId(null).build().buildHouse();
         var expected = HouseTestBuilder.builder().build().buildHouse();
+        var dto = HouseTestBuilder.builder().build().buildHouseCreateDto();
 
-        doReturn(expected).when(houseRepository).create(houseToSave);
+        doReturn(expected).when(houseService).create(houseToSave);
+        when(houseConverter.convert(dto)).thenReturn(houseToSave);
 
-        houseService.create(houseToSave);
+        houseFacade.create(dto);
 
-        verify(houseRepository).create(argumentCaptor.capture());
+        verify(houseService).create(argumentCaptor.capture());
         assertThat(argumentCaptor.getValue()).hasFieldOrPropertyWithValue(BaseModel.Fields.id, null);
     }
 
     @Test
-    void updateShouldInvokeRepositoryWhenHouseFound() {
+    void updateShouldCallsMergeAndSaveWhenHouseFound() {
         var uuid = HouseTestBuilder.builder().build().getUuid();
+        var dto = HouseTestBuilder.builder().build().buildHouseUpdateDto();
         var expected = HouseTestBuilder.builder().build().buildHouse();
 
-        when(houseRepository.getByUuid(uuid)).thenReturn(expected);
+        when(houseService.getByUuid(uuid)).thenReturn(expected);
 
-        houseService.update(expected);
+        houseFacade.update(dto);
 
-        verify(houseRepository, times(1)).getByUuid(uuid);
-        verify(houseRepository, times(1)).update(expected);
-    }
-
-    @Test
-    void patchShouldInvokeRepositoryWhenHouseFound() {
-        var uuid = HouseTestBuilder.builder().build().getUuid();
-        var expected = HouseTestBuilder.builder().build().buildHouse();
-        var houseUpdate = new House();
-
-        when(houseRepository.getByUuid(uuid)).thenReturn(houseUpdate);
-
-        houseService.patch(expected);
-
-        verify(houseRepository, times(1)).getByUuid(uuid);
-        verify(houseRepository, times(1)).update(houseUpdate);
+        verify(houseService, times(1)).getByUuid(uuid);
+        verify(houseConverter, times(1)).merge(argumentCaptor.capture(), eq(dto));
+        assertSame(expected, argumentCaptor.getValue());
+        verify(houseService, times(1)).update(expected);
     }
 
     @Test
     void delete() {
         var uuid = HouseTestBuilder.builder().build().getUuid();
 
-        houseService.delete(uuid);
+        houseFacade.delete(uuid);
 
-        verify(houseRepository).deleteByUuid(uuid);
+        verify(houseService).delete(uuid);
     }
 }

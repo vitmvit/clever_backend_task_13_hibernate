@@ -31,7 +31,7 @@ public class Person extends LogModel {
     @Embedded
     private Passport passport;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(
             name = "house_id",
             referencedColumnName = "id",
@@ -39,7 +39,7 @@ public class Person extends LogModel {
     )
     private House home;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
     @JoinTable(
             name = "house_owner",
             joinColumns = @JoinColumn(name = "person_id"),

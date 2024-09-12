@@ -1,14 +1,15 @@
 package ru.clevertec.house.controller;
 
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.clevertec.house.facade.HouseFacade;
 import ru.clevertec.house.model.dto.HouseDto;
 import ru.clevertec.house.model.dto.PersonDto;
 import ru.clevertec.house.model.dto.create.HouseCreateDto;
 import ru.clevertec.house.model.dto.update.HouseUpdateDto;
-import ru.clevertec.house.service.HouseService;
 
 import java.util.List;
 import java.util.UUID;
@@ -21,61 +22,62 @@ import static ru.clevertec.house.constant.Constant.OFFSET_DEFAULT;
 @RequestMapping("/api/houses")
 public class HouseController {
 
-    private final HouseService houseService;
+    @Autowired
+    private HouseFacade houseFacade;
 
     @GetMapping
     public ResponseEntity<List<HouseDto>> getAll(@RequestParam(value = "offset", defaultValue = OFFSET_DEFAULT) Integer offset,
                                                  @RequestParam(value = "limit", defaultValue = LIMIT_DEFAULT) Integer limit) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(houseService.getAll(offset, limit));
+                .body(houseFacade.getAll(offset, limit));
     }
 
     @GetMapping("/{uuid}")
     public ResponseEntity<HouseDto> getByUuid(@PathVariable("uuid") UUID uuid) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(houseService.getByUuid(uuid));
+                .body(houseFacade.getByUuid(uuid));
     }
 
     @GetMapping("residents/{uuid}")
     public ResponseEntity<List<PersonDto>> getAllResidents(@PathVariable("uuid") UUID uuid) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(houseService.getAllResidents(uuid));
+                .body(houseFacade.getAllResidents(uuid));
     }
 
     @GetMapping("search/{city}")
     public ResponseEntity<List<HouseDto>> searchHouseByCity(@PathVariable("city") String city) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(houseService.searchByCity(city));
+                .body(houseFacade.searchByCity(city));
     }
 
     @PostMapping
     public ResponseEntity<HouseDto> create(@RequestBody HouseCreateDto houseCreateDto) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(houseService.create(houseCreateDto));
+                .body(houseFacade.create(houseCreateDto));
     }
 
     @PutMapping
     public ResponseEntity<HouseDto> update(@RequestBody HouseUpdateDto houseUpdateDto) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(houseService.update(houseUpdateDto));
+                .body(houseFacade.update(houseUpdateDto));
     }
 
     @PatchMapping
     public ResponseEntity<HouseDto> patch(@RequestBody HouseUpdateDto houseUpdateDto) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(houseService.patch(houseUpdateDto));
+                .body(houseFacade.patch(houseUpdateDto));
     }
 
     @DeleteMapping("/{uuid}")
     public ResponseEntity<Void> delete(@PathVariable("uuid") UUID uuid) {
-        houseService.delete(uuid);
+        houseFacade.delete(uuid);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

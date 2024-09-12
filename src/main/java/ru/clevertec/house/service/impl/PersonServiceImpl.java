@@ -2,37 +2,30 @@ package ru.clevertec.house.service.impl;
 
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.clevertec.house.converter.HouseConverter;
-import ru.clevertec.house.converter.PersonConverter;
 import ru.clevertec.house.exception.EmptyListException;
 import ru.clevertec.house.exception.EntityNotFoundException;
 import ru.clevertec.house.exception.PatchException;
-import ru.clevertec.house.model.dto.HouseDto;
-import ru.clevertec.house.model.dto.PersonDto;
-import ru.clevertec.house.model.dto.create.PersonCreateDto;
-import ru.clevertec.house.model.dto.update.PersonUpdateDto;
+import ru.clevertec.house.model.entity.House;
 import ru.clevertec.house.model.entity.Person;
-import ru.clevertec.house.repository.HouseRepository;
 import ru.clevertec.house.repository.PersonRepository;
 import ru.clevertec.house.service.PersonService;
 import ru.clevertec.house.util.Patcher;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
 @AllArgsConstructor
 public class PersonServiceImpl implements PersonService {
 
-    private final PersonRepository personRepository;
-    private final PersonConverter personConverter;
-    private final HouseConverter houseConverter;
-    private final HouseRepository houseRepository;
+    @Autowired
+    private PersonRepository personRepository;
 
-    private final Patcher patcher;
+    @Autowired
+    private Patcher patcher;
 
     /**
      * Возвращает информацию о жильце по заданному UUID.
@@ -42,8 +35,8 @@ public class PersonServiceImpl implements PersonService {
      * @throws EntityNotFoundException если жилец не найден
      */
     @Override
-    public PersonDto getByUuid(UUID uuid) {
-        return personConverter.convert(personRepository.getByUuid(uuid));
+    public Person getByUuid(UUID uuid) {
+        return personRepository.getByUuid(uuid);
     }
 
     /**
@@ -54,11 +47,11 @@ public class PersonServiceImpl implements PersonService {
      * @return страница с информацией о жильцах
      */
     @Override
-    public List<PersonDto> getAll(int offset, int limit) {
+    public List<Person> getAll(int offset, int limit) {
         List<Person> personPage = personRepository.getAll(offset, limit);
         return personPage.isEmpty()
                 ? List.of()
-                : personPage.stream().map(personConverter::convert).collect(Collectors.toList());
+                : personPage;
     }
 
     /**
@@ -69,23 +62,21 @@ public class PersonServiceImpl implements PersonService {
      * @throws EmptyListException если список жильцав пуст
      */
     @Override
-    public List<PersonDto> searchBySurname(String surname) {
+    public List<Person> searchBySurname(String surname) {
         var personList = personRepository.getBySurnameContaining(surname);
         personList.stream().findAny().orElseThrow(EmptyListException::new);
-        return personList.stream().map(personConverter::convert).collect(Collectors.toList());
+        return personList;
     }
 
     /**
      * Создает нового жильца на основе данных из DTO.
      *
-     * @param dto данные для создания жильца
+     * @param person данные для создания жильца
      * @return созданный жилец
      */
     @Override
-    public PersonDto create(PersonCreateDto dto) {
-        var person = personConverter.convert(dto);
-        person.setHome(houseRepository.getByUuid(dto.getHomeUuid()));
-        return personConverter.convert(personRepository.create(person));
+    public Person create(Person person) {
+        return personRepository.create(person);
     }
 
     /**
@@ -96,10 +87,9 @@ public class PersonServiceImpl implements PersonService {
      * @throws EntityNotFoundException если жилец не найден
      */
     @Override
-    public PersonDto update(PersonUpdateDto dto) {
+    public Person update(Person dto) {
         var person = personRepository.getByUuid(dto.getUuid());
-        personConverter.merge(person, dto);
-        return personConverter.convert(personRepository.update(person));
+        return personRepository.update(person);
     }
 
     /**
@@ -112,12 +102,12 @@ public class PersonServiceImpl implements PersonService {
      * @see ru.clevertec.house.util.Patcher
      */
     @Override
-    public PersonDto patch(PersonUpdateDto personUpdateDto) {
+    public Person patch(Person personUpdateDto) {
         var person = personRepository.getByUuid(personUpdateDto.getUuid());
         try {
-            patcher.personPatcher(person, personConverter.convert(personUpdateDto));
+            patcher.personPatcher(person, personUpdateDto);
             personRepository.update(person);
-            return personConverter.convert(person);
+            return person;
         } catch (IllegalAccessException e) {
             throw new PatchException();
         }
@@ -141,10 +131,10 @@ public class PersonServiceImpl implements PersonService {
      * @throws EntityNotFoundException если жилец не найден
      */
     @Override
-    public List<HouseDto> getAllHouses(UUID uuid) {
+    public List<House> getAllHouses(UUID uuid) {
         var person = personRepository.getByUuid(uuid);
         return person.getHouses().isEmpty()
                 ? List.of()
-                : person.getHouses().stream().map(houseConverter::convert).collect(Collectors.toList());
+                : person.getHouses();
     }
 }

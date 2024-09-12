@@ -22,5 +22,6 @@ public class PersonCreateDto {
 
     @Embedded
     private Passport passport;
+
     private UUID homeUuid;
 }
