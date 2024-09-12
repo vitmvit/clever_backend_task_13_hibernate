@@ -1,14 +1,14 @@
 package ru.clevertec.house.service.impl;
 
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.clevertec.house.exception.EmptyListException;
-import ru.clevertec.house.exception.EntityNotFoundException;
 import ru.clevertec.house.exception.PatchException;
 import ru.clevertec.house.model.entity.House;
 import ru.clevertec.house.model.entity.Person;
+import ru.clevertec.house.observer.EventSource;
+import ru.clevertec.house.observer.impl.PersonObserver;
 import ru.clevertec.house.repository.PersonRepository;
 import ru.clevertec.house.service.PersonService;
 import ru.clevertec.house.util.Patcher;
@@ -16,10 +16,15 @@ import ru.clevertec.house.util.Patcher;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Реализация сервиса управления данными о людях, основанная на репозиториях
+ * для выполнения различных операций с людьми.
+ */
 @Service
 @Transactional
-@AllArgsConstructor
 public class PersonServiceImpl implements PersonService {
+
+    private final EventSource subject = new EventSource();
 
     @Autowired
     private PersonRepository personRepository;
@@ -27,12 +32,15 @@ public class PersonServiceImpl implements PersonService {
     @Autowired
     private Patcher patcher;
 
+    public PersonServiceImpl() {
+        subject.addObserver(new PersonObserver());
+    }
+
     /**
-     * Возвращает информацию о жильце по заданному UUID.
+     * Получает человека по его уникальному идентификатору.
      *
-     * @param uuid UUID жильца
-     * @return информация о жильце
-     * @throws EntityNotFoundException если жилец не найден
+     * @param uuid уникальный идентификатор человека
+     * @return объект Person, представляющий человека
      */
     @Override
     public Person getByUuid(UUID uuid) {
@@ -40,11 +48,11 @@ public class PersonServiceImpl implements PersonService {
     }
 
     /**
-     * Возвращает страницу с информацией о жильцах.
+     * Получает список всех людей с применением пагинации.
      *
-     * @param offset смещение страницы
-     * @param limit  лимит элементов на странице
-     * @return страница с информацией о жильцах
+     * @param offset сдвиг для пагинации
+     * @param limit  максимальное количество возвращаемых людей
+     * @return список Person, представляющий людей
      */
     @Override
     public List<Person> getAll(int offset, int limit) {
@@ -55,11 +63,11 @@ public class PersonServiceImpl implements PersonService {
     }
 
     /**
-     * Возвращает список жильцав, найденных по фрагменту фамилии.
+     * Ищет людей по фамилии.
      *
-     * @param surname фрагмент фамилии
-     * @return список жильцав
-     * @throws EmptyListException если список жильцав пуст
+     * @param surname фамилия человека
+     * @return список Person, представляющий найденных людей
+     * @throws EmptyListException если не найдено ни одного человека
      */
     @Override
     public List<Person> searchBySurname(String surname) {
@@ -69,22 +77,22 @@ public class PersonServiceImpl implements PersonService {
     }
 
     /**
-     * Создает нового жильца на основе данных из DTO.
+     * Создает нового человека и уведомляет наблюдателей об этом событии.
      *
-     * @param person данные для создания жильца
-     * @return созданный жилец
+     * @param person объект Person, содержащий данные для создания человека
+     * @return объект Person, представляющий созданного человека
      */
     @Override
     public Person create(Person person) {
+        subject.notifyObservers(person);
         return personRepository.create(person);
     }
 
     /**
-     * Обновляет информацию о жильце на основе данных из DTO.
+     * Обновляет существующего человека.
      *
-     * @param dto данные для обновления жильца
-     * @return обновленный жилец
-     * @throws EntityNotFoundException если жилец не найден
+     * @param dto объект Person, содержащий данные для обновления человека
+     * @return объект Person, представляющий обновленного человека
      */
     @Override
     public Person update(Person dto) {
@@ -93,13 +101,11 @@ public class PersonServiceImpl implements PersonService {
     }
 
     /**
-     * Обновляет информацию о жильце на основе данных из DTO.
+     * Частично обновляет человека на основе переданных данных.
      *
-     * @param personUpdateDto данные для обновления жильца
-     * @return обновленный жилец
-     * @throws EntityNotFoundException если жильце не найден
-     * @throws PatchException          если возникла ошибка выполнении метода personPatcher
-     * @see ru.clevertec.house.util.Patcher
+     * @param personUpdateDto объект Person, содержащий данные для частичного обновления человека
+     * @return объект Person, представляющий обновленного человека
+     * @throws PatchException если происходит ошибка при обновлении
      */
     @Override
     public Person patch(Person personUpdateDto) {
@@ -114,9 +120,9 @@ public class PersonServiceImpl implements PersonService {
     }
 
     /**
-     * Удаляет жильца по заданному UUID.
+     * Удаляет человека по его уникальному идентификатору.
      *
-     * @param uuid UUID жильца
+     * @param uuid уникальный идентификатор человека
      */
     @Override
     public void delete(UUID uuid) {
@@ -124,11 +130,10 @@ public class PersonServiceImpl implements PersonService {
     }
 
     /**
-     * Получает список всех домов, связанных с указанным жильцом.
+     * Получает все дома, которыми владеет человек, по его уникальному идентификатору.
      *
-     * @param uuid UUID жильцом
-     * @return список домов
-     * @throws EntityNotFoundException если жилец не найден
+     * @param uuid уникальный идентификатор человека
+     * @return список House, представляющий дома, принадлежащие человеку
      */
     @Override
     public List<House> getAllHouses(UUID uuid) {

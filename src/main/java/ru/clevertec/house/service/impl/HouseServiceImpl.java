@@ -1,14 +1,14 @@
 package ru.clevertec.house.service.impl;
 
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.clevertec.house.exception.EmptyListException;
-import ru.clevertec.house.exception.EntityNotFoundException;
 import ru.clevertec.house.exception.PatchException;
 import ru.clevertec.house.model.entity.House;
 import ru.clevertec.house.model.entity.Person;
+import ru.clevertec.house.observer.EventSource;
+import ru.clevertec.house.observer.impl.HouseObserver;
 import ru.clevertec.house.repository.HouseRepository;
 import ru.clevertec.house.service.HouseService;
 import ru.clevertec.house.util.Patcher;
@@ -24,7 +24,6 @@ import java.util.UUID;
  */
 @Service
 @Transactional
-@AllArgsConstructor
 public class HouseServiceImpl implements HouseService {
 
     @Autowired
@@ -33,12 +32,17 @@ public class HouseServiceImpl implements HouseService {
     @Autowired
     private Patcher patcher;
 
+    private final EventSource eventSource = new EventSource();
+
+    public HouseServiceImpl() {
+        eventSource.addObserver(new HouseObserver());
+    }
+
     /**
-     * Возвращает информацию о доме по заданному UUID.
+     * Получает дом по его уникальному идентификатору.
      *
-     * @param uuid UUID дома
-     * @return информация о доме
-     * @throws EntityNotFoundException если дом не найден
+     * @param uuid уникальный идентификатор дома
+     * @return объект House, представляющий дом
      */
     @Override
     public House getByUuid(UUID uuid) {
@@ -46,11 +50,11 @@ public class HouseServiceImpl implements HouseService {
     }
 
     /**
-     * Возвращает страницу с информацией о домах.
+     * Получает список всех домов с применением пагинации.
      *
-     * @param offset смещение страницы
-     * @param limit  лимит элементов на странице
-     * @return страница с информацией о домах
+     * @param offset сдвиг для пагинации
+     * @param limit  максимальное количество возвращаемых домов
+     * @return список House, представляющий дома
      */
     @Override
     public List<House> getAll(int offset, int limit) {
@@ -61,11 +65,11 @@ public class HouseServiceImpl implements HouseService {
     }
 
     /**
-     * Возвращает список домов, найденных по фрагменту названия города.
+     * Ищет дома по названию города.
      *
-     * @param city фрагмент названия города
-     * @return список домов
-     * @throws EmptyListException если список домов пуст
+     * @param city название города
+     * @return список House, представляющий найденные дома
+     * @throws EmptyListException если не найдено ни одного дома
      */
     @Override
     public List<House> searchByCity(String city) {
@@ -75,21 +79,22 @@ public class HouseServiceImpl implements HouseService {
     }
 
     /**
-     * Создает новый дом и сохраняет его в репозитории.
+     * Создает новый дом и уведомляет наблюдателей об этом событии.
      *
-     * @param house объект дома, который необходимо создать
-     * @return созданный объект дома
+     * @param house объект House, содержащий данные для создания дома
+     * @return объект House, представляющий созданный дом
      */
     @Override
     public House create(House house) {
+        eventSource.notifyObservers(house);
         return houseRepository.create(house);
     }
 
     /**
-     * Обновляет существующий дом в репозитории.
+     * Обновляет существующий дом.
      *
-     * @param dto объект дома, содержащий обновленные данные
-     * @return обновленный объект дома
+     * @param dto объект House, содержащий данные для обновления дома
+     * @return объект House, представляющий обновленный дом
      */
     @Override
     public House update(House dto) {
@@ -98,11 +103,11 @@ public class HouseServiceImpl implements HouseService {
     }
 
     /**
-     * Частично обновляет существующий дом в репозитории.
+     * Частично обновляет дом на основе переданных данных.
      *
-     * @param houseUpdateDto объект дома, содержащий данные для частичного обновления
-     * @return частично обновленный объект дома
-     * @throws PatchException если произошла ошибка при частичном обновлении
+     * @param houseUpdateDto объект House, содержащий данные для частичного обновления дома
+     * @return объект House, представляющий обновленный дом
+     * @throws PatchException если происходит ошибка при обновлении
      */
     @Override
     public House patch(House houseUpdateDto) {
@@ -117,9 +122,9 @@ public class HouseServiceImpl implements HouseService {
     }
 
     /**
-     * Удаляет дом по заданному UUID.
+     * Удаляет дом по его уникальному идентификатору.
      *
-     * @param uuid UUID дома
+     * @param uuid уникальный идентификатор дома
      */
     @Override
     public void delete(UUID uuid) {
@@ -127,10 +132,10 @@ public class HouseServiceImpl implements HouseService {
     }
 
     /**
-     * Возвращает список проживающих лиц в доме по заданному UUID.
+     * Получает всех жителей дома по его уникальному идентификатору.
      *
-     * @param uuid UUID дома
-     * @return список проживающих лиц
+     * @param uuid уникальный идентификатор дома
+     * @return список Person, представляющий жителей дома
      */
     @Override
     public List<Person> getAllResidents(UUID uuid) {

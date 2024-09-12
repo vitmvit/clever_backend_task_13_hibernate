@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldNameConstants;
 import ru.clevertec.house.constant.Sex;
-import ru.clevertec.house.listener.PersonListener;
 import ru.clevertec.house.model.entity.parent.LogModel;
 
 import java.util.List;
@@ -18,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @FieldNameConstants
 @Entity(name = "person")
-@EntityListeners(PersonListener.class)
+//@EntityListeners(PersonListener.class)
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = {"uuid", "passport_series", "passport_number"}))
 public class Person extends LogModel {
 
