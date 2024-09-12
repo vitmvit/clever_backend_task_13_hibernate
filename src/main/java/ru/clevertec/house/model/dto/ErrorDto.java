@@ -12,4 +12,3 @@ public class ErrorDto {
     private final String errorMessage;
     private final Integer errorCode;
 }
-

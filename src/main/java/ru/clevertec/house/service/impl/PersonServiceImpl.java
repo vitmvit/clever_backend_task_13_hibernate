@@ -4,14 +4,16 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.clevertec.house.exception.EmptyListException;
-import ru.clevertec.house.exception.PatchException;
 import ru.clevertec.house.model.entity.House;
 import ru.clevertec.house.model.entity.Person;
 import ru.clevertec.house.observer.EventSource;
 import ru.clevertec.house.observer.impl.PersonObserver;
+import ru.clevertec.house.patcher.Patcher;
 import ru.clevertec.house.repository.PersonRepository;
 import ru.clevertec.house.service.PersonService;
-import ru.clevertec.house.util.Patcher;
+import ru.clevertec.house.strategy.PersonUpdateStrategy;
+import ru.clevertec.house.strategy.impl.PersonFullUpdateStrategy;
+import ru.clevertec.house.strategy.impl.PersonPatchStrategy;
 
 import java.util.List;
 import java.util.UUID;
@@ -25,6 +27,8 @@ import java.util.UUID;
 public class PersonServiceImpl implements PersonService {
 
     private final EventSource subject = new EventSource();
+
+    private PersonUpdateStrategy personUpdateStrategy;
 
     @Autowired
     private PersonRepository personRepository;
@@ -89,34 +93,34 @@ public class PersonServiceImpl implements PersonService {
     }
 
     /**
-     * Обновляет существующего человека.
+     * Обновляет объект Person с использованием стратегии полного обновления.
+     * <p>
+     * Создает новую стратегию {@link PersonFullUpdateStrategy} и вызывает
+     * её метод обновления для обновления переданного объекта person.
      *
-     * @param dto объект Person, содержащий данные для обновления человека
-     * @return объект Person, представляющий обновленного человека
+     * @param person объект Person с новыми данными для обновления.
+     * @return обновленный объект Person.
      */
     @Override
-    public Person update(Person dto) {
-        var person = personRepository.getByUuid(dto.getUuid());
-        return personRepository.update(person);
+    public Person update(Person person) {
+        personUpdateStrategy = new PersonFullUpdateStrategy(personRepository);
+        return personUpdateStrategy.update(person);
     }
 
     /**
-     * Частично обновляет человека на основе переданных данных.
+     * Частично обновляет объект Person с использованием стратегии патчинга.
+     * <p>
+     * Создает новую стратегию {@link PersonPatchStrategy} и вызывает её метод
+     * обновления для применения изменений к переданному объекту person.
      *
-     * @param personUpdateDto объект Person, содержащий данные для частичного обновления человека
-     * @return объект Person, представляющий обновленного человека
-     * @throws PatchException если происходит ошибка при обновлении
+     * @param person объект Person с изменениями.
+     *               Необязательные поля могут быть оставлены пустыми.
+     * @return обновленный объект Person.
      */
     @Override
-    public Person patch(Person personUpdateDto) {
-        var person = personRepository.getByUuid(personUpdateDto.getUuid());
-        try {
-            patcher.personPatcher(person, personUpdateDto);
-            personRepository.update(person);
-            return person;
-        } catch (IllegalAccessException e) {
-            throw new PatchException();
-        }
+    public Person patch(Person person) {
+        personUpdateStrategy = new PersonPatchStrategy(personRepository, patcher);
+        return personUpdateStrategy.update(person);
     }
 
     /**

@@ -13,10 +13,10 @@ import ru.clevertec.house.facade.impl.PersonFacadeImpl;
 import ru.clevertec.house.model.entity.Person;
 import ru.clevertec.house.model.entity.parent.BaseModel;
 import ru.clevertec.house.model.entity.parent.UuidModel;
+import ru.clevertec.house.patcher.Patcher;
 import ru.clevertec.house.service.HouseService;
 import ru.clevertec.house.service.PersonService;
 import ru.clevertec.house.util.HouseTestBuilder;
-import ru.clevertec.house.util.Patcher;
 import ru.clevertec.house.util.PersonTestBuilder;
 
 import java.util.List;

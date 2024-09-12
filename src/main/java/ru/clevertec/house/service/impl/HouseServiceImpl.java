@@ -4,14 +4,16 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.clevertec.house.exception.EmptyListException;
-import ru.clevertec.house.exception.PatchException;
 import ru.clevertec.house.model.entity.House;
 import ru.clevertec.house.model.entity.Person;
 import ru.clevertec.house.observer.EventSource;
 import ru.clevertec.house.observer.impl.HouseObserver;
+import ru.clevertec.house.patcher.Patcher;
 import ru.clevertec.house.repository.HouseRepository;
 import ru.clevertec.house.service.HouseService;
-import ru.clevertec.house.util.Patcher;
+import ru.clevertec.house.strategy.HouseUpdateStrategy;
+import ru.clevertec.house.strategy.impl.HouseFullUpdateStrategy;
+import ru.clevertec.house.strategy.impl.HousePatchStrategy;
 
 import java.util.List;
 import java.util.UUID;
@@ -27,8 +29,12 @@ import java.util.UUID;
 public class HouseServiceImpl implements HouseService {
 
     private final EventSource eventSource = new EventSource();
+
+    private HouseUpdateStrategy houseUpdateStrategy;
+
     @Autowired
     private HouseRepository houseRepository;
+
     @Autowired
     private Patcher patcher;
 
@@ -89,34 +95,34 @@ public class HouseServiceImpl implements HouseService {
     }
 
     /**
-     * Обновляет существующий дом.
+     * Обновляет объект House с использованием стратегии полного обновления.
+     * <p>
+     * Создает новую стратегию {@link HouseFullUpdateStrategy} и вызывает
+     * её метод обновления для обновления переданного объекта house.
      *
-     * @param dto объект House, содержащий данные для обновления дома
-     * @return объект House, представляющий обновленный дом
+     * @param house объект House с новыми данными для обновления.
+     * @return обновленный объект House.
      */
     @Override
-    public House update(House dto) {
-        var house = houseRepository.getByUuid(dto.getUuid());
-        return houseRepository.update(house);
+    public House update(House house) {
+        houseUpdateStrategy = new HouseFullUpdateStrategy(houseRepository);
+        return houseUpdateStrategy.update(house);
     }
 
     /**
-     * Частично обновляет дом на основе переданных данных.
+     * Частично обновляет объект House с использованием стратегии патчинга.
+     * <p>
+     * Создает новую стратегию {@link HousePatchStrategy} и вызывает её метод
+     * обновления для применения изменений к переданному объекту house.
      *
-     * @param houseUpdateDto объект House, содержащий данные для частичного обновления дома
-     * @return объект House, представляющий обновленный дом
-     * @throws PatchException если происходит ошибка при обновлении
+     * @param house объект House с изменениями.
+     *              Необязательные поля могут быть оставлены пустыми.
+     * @return обновленный объект House.
      */
     @Override
-    public House patch(House houseUpdateDto) {
-        var house = houseRepository.getByUuid(houseUpdateDto.getUuid());
-        try {
-            patcher.housePatcher(house, houseUpdateDto);
-            houseRepository.update(house);
-            return house;
-        } catch (IllegalAccessException e) {
-            throw new PatchException();
-        }
+    public House patch(House house) {
+        houseUpdateStrategy = new HousePatchStrategy(houseRepository, patcher);
+        return houseUpdateStrategy.update(house);
     }
 
     /**

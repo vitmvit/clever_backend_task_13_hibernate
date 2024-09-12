@@ -10,10 +10,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import ru.clevertec.house.model.entity.House;
 import ru.clevertec.house.model.entity.parent.BaseModel;
 import ru.clevertec.house.model.entity.parent.UuidModel;
+import ru.clevertec.house.patcher.Patcher;
 import ru.clevertec.house.repository.HouseRepository;
 import ru.clevertec.house.service.impl.HouseServiceImpl;
 import ru.clevertec.house.util.HouseTestBuilder;
-import ru.clevertec.house.util.Patcher;
 
 import java.util.List;
 

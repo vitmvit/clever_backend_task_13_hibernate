@@ -1,4 +1,4 @@
-package ru.clevertec.house.util;
+package ru.clevertec.house.patcher;
 
 import org.springframework.stereotype.Component;
 import ru.clevertec.house.model.entity.House;
