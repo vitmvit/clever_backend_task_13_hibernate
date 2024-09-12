@@ -26,13 +26,11 @@ import java.util.UUID;
 @Transactional
 public class HouseServiceImpl implements HouseService {
 
+    private final EventSource eventSource = new EventSource();
     @Autowired
     private HouseRepository houseRepository;
-
     @Autowired
     private Patcher patcher;
-
-    private final EventSource eventSource = new EventSource();
 
     public HouseServiceImpl() {
         eventSource.addObserver(new HouseObserver());
