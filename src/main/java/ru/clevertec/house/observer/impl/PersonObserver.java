@@ -13,8 +13,8 @@ import java.util.UUID;
 public class PersonObserver implements Observer {
 
     @Override
-    public void update(Object o) {
-        if (o instanceof Person person) {
+    public void update(Object obj) {
+        if (obj instanceof Person person) {
             person.setUuid(UUID.randomUUID());
             person.setHouses(new ArrayList<>());
         } else {

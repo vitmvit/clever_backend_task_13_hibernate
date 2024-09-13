@@ -12,8 +12,8 @@ import java.util.UUID;
 public class HouseObserver implements Observer {
 
     @Override
-    public void update(Object o) {
-        if (o instanceof House house) {
+    public void update(Object obj) {
+        if (obj instanceof House house) {
             house.setUuid(UUID.randomUUID());
         } else {
             throw new ClassCastException();
