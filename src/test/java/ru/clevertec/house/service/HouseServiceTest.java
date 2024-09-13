@@ -103,14 +103,12 @@ public class HouseServiceTest {
 
     @Test
     void updateShouldInvokeRepositoryWhenHouseFound() {
-        var uuid = HouseTestBuilder.builder().build().getUuid();
         var expected = HouseTestBuilder.builder().build().buildHouse();
 
-        when(houseRepository.getByUuid(uuid)).thenReturn(expected);
+        when(houseRepository.update(expected)).thenReturn(expected);
 
         houseService.update(expected);
 
-        verify(houseRepository, times(1)).getByUuid(uuid);
         verify(houseRepository, times(1)).update(expected);
     }
 

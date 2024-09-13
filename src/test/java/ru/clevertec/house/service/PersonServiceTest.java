@@ -108,13 +108,11 @@ public class PersonServiceTest {
     @Test
     void updateShouldInvokeRepositoryWhenPersonFound() {
         var expected = PersonTestBuilder.builder().build().buildPerson();
-        var uuid = expected.getUuid();
 
-        when(personRepository.getByUuid(uuid)).thenReturn(expected);
+        when(personRepository.update(expected)).thenReturn(expected);
 
         personService.update(expected);
 
-        verify(personRepository, times(1)).getByUuid(uuid);
         verify(personRepository, times(1)).update(expected);
     }
 
