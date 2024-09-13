@@ -24,12 +24,11 @@ public class HouseFullUpdateStrategy implements HouseUpdateStrategy {
      * Находит объект House по его UUID и заменяет его данными
      * из переданного объекта house.
      *
-     * @param person объект House с новыми данными для обновления. Необходимый объект должен содержать действующий UUID.
+     * @param house объект House с новыми данными для обновления. Необходимый объект должен содержать действующий UUID.
      * @return обновленный объект House.
      */
     @Override
-    public House update(House person) {
-        var house = houseRepository.getByUuid(person.getUuid());
+    public House update(House house) {
         return houseRepository.update(house);
     }
 }

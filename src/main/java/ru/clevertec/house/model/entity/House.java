@@ -18,7 +18,6 @@ import java.util.List;
 @AllArgsConstructor
 @FieldNameConstants
 @Entity(name = "house")
-//@EntityListeners(HouseListener.class)
 public class House extends UuidModel {
 
     private String area;

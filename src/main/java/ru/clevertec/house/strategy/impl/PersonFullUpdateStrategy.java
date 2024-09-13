@@ -25,6 +25,6 @@ public class PersonFullUpdateStrategy implements ru.clevertec.house.strategy.Per
      */
     @Override
     public Person update(Person person) {
-        return personRepository.update(personRepository.getByUuid(person.getUuid()));
+        return personRepository.update(person);
     }
 }

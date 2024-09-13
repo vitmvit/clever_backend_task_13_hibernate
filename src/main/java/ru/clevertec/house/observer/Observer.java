@@ -8,5 +8,5 @@ public interface Observer {
     /**
      * Метод, который будет вызван, когда наблюдатель будет уведомлен об изменении.
      */
-    void update(Object o);
+    void update(Object obj);
 }

@@ -31,20 +31,28 @@ public class DataSourceConfig {
 
     @Value("${" + HIBERNATE_TRANSACTION_JTA_PLATFORM + "}")
     private String transactionJtaPlatform;
+
     @Value("${" + HIBERNATE_OGM_DATASTORE_PROVIDER + "}")
     private String ogmDatasourceProvider;
+
     @Value("${" + HIBERNATE_USE_SQL_COMMENTS + "}")
     private String useSqlComments;
+
     @Value("${" + HIBERNATE_SHOW_SQL + "}")
     private String showSql;
+
     @Value("${" + HIBERNATE_FORMAT_SQL + "}")
     private String formatSql;
+
     @Value("${database.driver}")
     private String driver;
+
     @Value("${database.url}")
     private String url;
+
     @Value("${database.user}")
     private String user;
+
     @Value("${database.password}")
     private String password;
 

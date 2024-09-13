@@ -1,6 +1,5 @@
 package ru.clevertec.house.facade.impl;
 
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.clevertec.house.converter.HouseConverter;
@@ -22,7 +21,6 @@ import java.util.stream.Collectors;
  * объектами дома и их состоянием.
  */
 @Component
-@AllArgsConstructor
 public class HouseFacadeImpl implements HouseFacade {
 
     @Autowired

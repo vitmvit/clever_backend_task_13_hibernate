@@ -26,10 +26,8 @@ import java.util.UUID;
 @Transactional
 public class PersonServiceImpl implements PersonService {
 
-    private final EventSource subject = new EventSource();
-
+    private final EventSource eventSource;
     private PersonUpdateStrategy personUpdateStrategy;
-
     @Autowired
     private PersonRepository personRepository;
 
@@ -37,7 +35,8 @@ public class PersonServiceImpl implements PersonService {
     private Patcher patcher;
 
     public PersonServiceImpl() {
-        subject.addObserver(new PersonObserver());
+        eventSource = new EventSource();
+        eventSource.addObserver(new PersonObserver());
     }
 
     /**
@@ -88,7 +87,7 @@ public class PersonServiceImpl implements PersonService {
      */
     @Override
     public Person create(Person person) {
-        subject.notifyObservers(person);
+        eventSource.notifyObservers(person);
         return personRepository.create(person);
     }
 

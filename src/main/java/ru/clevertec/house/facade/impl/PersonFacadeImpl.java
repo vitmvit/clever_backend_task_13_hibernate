@@ -1,6 +1,5 @@
 package ru.clevertec.house.facade.impl;
 
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.clevertec.house.converter.HouseConverter;
@@ -23,7 +22,6 @@ import java.util.stream.Collectors;
  * для операций, таких как получение, создание и обновление информации о людях.
  */
 @Component
-@AllArgsConstructor
 public class PersonFacadeImpl implements PersonFacade {
 
     @Autowired

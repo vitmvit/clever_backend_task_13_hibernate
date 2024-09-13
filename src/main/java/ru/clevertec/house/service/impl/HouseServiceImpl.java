@@ -28,8 +28,7 @@ import java.util.UUID;
 @Transactional
 public class HouseServiceImpl implements HouseService {
 
-    private final EventSource eventSource = new EventSource();
-
+    private final EventSource eventSource;
     private HouseUpdateStrategy houseUpdateStrategy;
 
     @Autowired
@@ -39,6 +38,7 @@ public class HouseServiceImpl implements HouseService {
     private Patcher patcher;
 
     public HouseServiceImpl() {
+        eventSource = new EventSource();
         eventSource.addObserver(new HouseObserver());
     }
 
