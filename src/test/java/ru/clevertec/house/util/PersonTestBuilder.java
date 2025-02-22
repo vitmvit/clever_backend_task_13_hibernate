@@ -80,7 +80,15 @@ public class PersonTestBuilder {
         return personUpdateDto;
     }
 
+    public List<Person> buildListPerson() {
+        return List.of(buildPerson(), buildPerson());
+    }
+
     public UUID getUuid() {
         return UUID.fromString("8a131fbc-38bf-4689-8f0b-958cef82a3ef");
+    }
+
+    public UUID getHomeUuid() {
+        return homeUuid;
     }
 }

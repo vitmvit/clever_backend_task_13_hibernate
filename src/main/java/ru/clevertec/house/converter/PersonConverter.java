@@ -18,5 +18,3 @@ public interface PersonConverter {
 
     Person merge(@MappingTarget Person house, PersonUpdateDto dto);
 }
-
-

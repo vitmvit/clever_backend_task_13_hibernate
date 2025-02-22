@@ -1,132 +1,131 @@
 package ru.clevertec.house.service.impl;
 
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.clevertec.house.converter.HouseConverter;
-import ru.clevertec.house.converter.PersonConverter;
 import ru.clevertec.house.exception.EmptyListException;
-import ru.clevertec.house.exception.EntityNotFoundException;
-import ru.clevertec.house.exception.PatchException;
-import ru.clevertec.house.model.dto.HouseDto;
-import ru.clevertec.house.model.dto.PersonDto;
-import ru.clevertec.house.model.dto.create.PersonCreateDto;
-import ru.clevertec.house.model.dto.update.PersonUpdateDto;
+import ru.clevertec.house.model.entity.House;
 import ru.clevertec.house.model.entity.Person;
-import ru.clevertec.house.repository.HouseRepository;
+import ru.clevertec.house.observer.EventSource;
+import ru.clevertec.house.observer.impl.PersonObserver;
+import ru.clevertec.house.patcher.Patcher;
 import ru.clevertec.house.repository.PersonRepository;
 import ru.clevertec.house.service.PersonService;
-import ru.clevertec.house.util.Patcher;
+import ru.clevertec.house.strategy.PersonUpdateStrategy;
+import ru.clevertec.house.strategy.impl.PersonFullUpdateStrategy;
+import ru.clevertec.house.strategy.impl.PersonPatchStrategy;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
+/**
+ * Реализация сервиса управления данными о людях, основанная на репозиториях
+ * для выполнения различных операций с людьми.
+ */
 @Service
 @Transactional
-@AllArgsConstructor
 public class PersonServiceImpl implements PersonService {
 
-    private final PersonRepository personRepository;
-    private final PersonConverter personConverter;
-    private final HouseConverter houseConverter;
-    private final HouseRepository houseRepository;
+    private final EventSource eventSource;
+    private PersonUpdateStrategy personUpdateStrategy;
+    @Autowired
+    private PersonRepository personRepository;
 
-    private final Patcher patcher;
+    @Autowired
+    private Patcher patcher;
 
-    /**
-     * Возвращает информацию о жильце по заданному UUID.
-     *
-     * @param uuid UUID жильца
-     * @return информация о жильце
-     * @throws EntityNotFoundException если жилец не найден
-     */
-    @Override
-    public PersonDto getByUuid(UUID uuid) {
-        return personConverter.convert(personRepository.getByUuid(uuid));
+    public PersonServiceImpl() {
+        eventSource = new EventSource();
+        eventSource.addObserver(new PersonObserver());
     }
 
     /**
-     * Возвращает страницу с информацией о жильцах.
+     * Получает человека по его уникальному идентификатору.
      *
-     * @param offset смещение страницы
-     * @param limit  лимит элементов на странице
-     * @return страница с информацией о жильцах
+     * @param uuid уникальный идентификатор человека
+     * @return объект Person, представляющий человека
      */
     @Override
-    public List<PersonDto> getAll(int offset, int limit) {
+    public Person getByUuid(UUID uuid) {
+        return personRepository.getByUuid(uuid);
+    }
+
+    /**
+     * Получает список всех людей с применением пагинации.
+     *
+     * @param offset сдвиг для пагинации
+     * @param limit  максимальное количество возвращаемых людей
+     * @return список Person, представляющий людей
+     */
+    @Override
+    public List<Person> getAll(int offset, int limit) {
         List<Person> personPage = personRepository.getAll(offset, limit);
         return personPage.isEmpty()
                 ? List.of()
-                : personPage.stream().map(personConverter::convert).collect(Collectors.toList());
+                : personPage;
     }
 
     /**
-     * Возвращает список жильцав, найденных по фрагменту фамилии.
+     * Ищет людей по фамилии.
      *
-     * @param surname фрагмент фамилии
-     * @return список жильцав
-     * @throws EmptyListException если список жильцав пуст
+     * @param surname фамилия человека
+     * @return список Person, представляющий найденных людей
+     * @throws EmptyListException если не найдено ни одного человека
      */
     @Override
-    public List<PersonDto> searchBySurname(String surname) {
+    public List<Person> searchBySurname(String surname) {
         var personList = personRepository.getBySurnameContaining(surname);
         personList.stream().findAny().orElseThrow(EmptyListException::new);
-        return personList.stream().map(personConverter::convert).collect(Collectors.toList());
+        return personList;
     }
 
     /**
-     * Создает нового жильца на основе данных из DTO.
+     * Создает нового человека и уведомляет наблюдателей об этом событии.
      *
-     * @param dto данные для создания жильца
-     * @return созданный жилец
+     * @param person объект Person, содержащий данные для создания человека
+     * @return объект Person, представляющий созданного человека
      */
     @Override
-    public PersonDto create(PersonCreateDto dto) {
-        var person = personConverter.convert(dto);
-        person.setHome(houseRepository.getByUuid(dto.getHomeUuid()));
-        return personConverter.convert(personRepository.create(person));
+    public Person create(Person person) {
+        eventSource.notifyObservers(person);
+        return personRepository.create(person);
     }
 
     /**
-     * Обновляет информацию о жильце на основе данных из DTO.
+     * Обновляет объект Person с использованием стратегии полного обновления.
+     * <p>
+     * Создает новую стратегию {@link PersonFullUpdateStrategy} и вызывает
+     * её метод обновления для обновления переданного объекта person.
      *
-     * @param dto данные для обновления жильца
-     * @return обновленный жилец
-     * @throws EntityNotFoundException если жилец не найден
+     * @param person объект Person с новыми данными для обновления.
+     * @return обновленный объект Person.
      */
     @Override
-    public PersonDto update(PersonUpdateDto dto) {
-        var person = personRepository.getByUuid(dto.getUuid());
-        personConverter.merge(person, dto);
-        return personConverter.convert(personRepository.update(person));
+    public Person update(Person person) {
+        personUpdateStrategy = new PersonFullUpdateStrategy(personRepository);
+        return personUpdateStrategy.update(person);
     }
 
     /**
-     * Обновляет информацию о жильце на основе данных из DTO.
+     * Частично обновляет объект Person с использованием стратегии патчинга.
+     * <p>
+     * Создает новую стратегию {@link PersonPatchStrategy} и вызывает её метод
+     * обновления для применения изменений к переданному объекту person.
      *
-     * @param personUpdateDto данные для обновления жильца
-     * @return обновленный жилец
-     * @throws EntityNotFoundException если жильце не найден
-     * @throws PatchException          если возникла ошибка выполнении метода personPatcher
-     * @see ru.clevertec.house.util.Patcher
+     * @param person объект Person с изменениями.
+     *               Необязательные поля могут быть оставлены пустыми.
+     * @return обновленный объект Person.
      */
     @Override
-    public PersonDto patch(PersonUpdateDto personUpdateDto) {
-        var person = personRepository.getByUuid(personUpdateDto.getUuid());
-        try {
-            patcher.personPatcher(person, personConverter.convert(personUpdateDto));
-            personRepository.update(person);
-            return personConverter.convert(person);
-        } catch (IllegalAccessException e) {
-            throw new PatchException();
-        }
+    public Person patch(Person person) {
+        personUpdateStrategy = new PersonPatchStrategy(personRepository, patcher);
+        return personUpdateStrategy.update(person);
     }
 
     /**
-     * Удаляет жильца по заданному UUID.
+     * Удаляет человека по его уникальному идентификатору.
      *
-     * @param uuid UUID жильца
+     * @param uuid уникальный идентификатор человека
      */
     @Override
     public void delete(UUID uuid) {
@@ -134,17 +133,16 @@ public class PersonServiceImpl implements PersonService {
     }
 
     /**
-     * Получает список всех домов, связанных с указанным жильцом.
+     * Получает все дома, которыми владеет человек, по его уникальному идентификатору.
      *
-     * @param uuid UUID жильцом
-     * @return список домов
-     * @throws EntityNotFoundException если жилец не найден
+     * @param uuid уникальный идентификатор человека
+     * @return список House, представляющий дома, принадлежащие человеку
      */
     @Override
-    public List<HouseDto> getAllHouses(UUID uuid) {
+    public List<House> getAllHouses(UUID uuid) {
         var person = personRepository.getByUuid(uuid);
         return person.getHouses().isEmpty()
                 ? List.of()
-                : person.getHouses().stream().map(houseConverter::convert).collect(Collectors.toList());
+                : person.getHouses();
     }
 }

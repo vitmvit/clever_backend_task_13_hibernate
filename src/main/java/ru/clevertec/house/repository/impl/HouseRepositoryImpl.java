@@ -23,6 +23,7 @@ public class HouseRepositoryImpl implements HouseRepository {
 
     @PersistenceContext
     private final EntityManager entityManager;
+
     private final JdbcTemplate jdbcTemplate;
 
     @Override

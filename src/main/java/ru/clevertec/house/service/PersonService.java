@@ -1,28 +1,26 @@
 package ru.clevertec.house.service;
 
-import ru.clevertec.house.model.dto.HouseDto;
-import ru.clevertec.house.model.dto.PersonDto;
-import ru.clevertec.house.model.dto.create.PersonCreateDto;
-import ru.clevertec.house.model.dto.update.PersonUpdateDto;
+import ru.clevertec.house.model.entity.House;
+import ru.clevertec.house.model.entity.Person;
 
 import java.util.List;
 import java.util.UUID;
 
 public interface PersonService {
 
-    PersonDto getByUuid(UUID uuid);
+    Person getByUuid(UUID uuid);
 
-    List<PersonDto> getAll(int offset, int limit);
+    List<Person> getAll(int offset, int limit);
 
-    List<PersonDto> searchBySurname(String surname);
+    List<Person> searchBySurname(String surname);
 
-    PersonDto create(PersonCreateDto dto);
+    Person create(Person person);
 
-    PersonDto update(PersonUpdateDto dto);
+    Person update(Person person);
 
-    PersonDto patch(PersonUpdateDto personUpdateDto);
+    Person patch(Person person);
 
     void delete(UUID uuid);
 
-    List<HouseDto> getAllHouses(UUID uuid);
+    List<House> getAllHouses(UUID uuid);
 }

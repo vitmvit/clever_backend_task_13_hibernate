@@ -71,6 +71,10 @@ public class HouseTestBuilder {
         return houseUpdateDto;
     }
 
+    public List<House> buildListHouse() {
+        return List.of(buildHouse(), buildHouse());
+    }
+
     public UUID getUuid() {
         return UUID.fromString("8a131fbc-38bf-4689-8f0b-958cef82a3ef");
     }

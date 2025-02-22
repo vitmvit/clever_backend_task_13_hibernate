@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldNameConstants;
 import ru.clevertec.house.constant.Sex;
-import ru.clevertec.house.listener.PersonListener;
 import ru.clevertec.house.model.entity.parent.LogModel;
 
 import java.util.List;
@@ -18,7 +17,6 @@ import java.util.List;
 @AllArgsConstructor
 @FieldNameConstants
 @Entity(name = "person")
-@EntityListeners(PersonListener.class)
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = {"uuid", "passport_series", "passport_number"}))
 public class Person extends LogModel {
 
@@ -31,7 +29,7 @@ public class Person extends LogModel {
     @Embedded
     private Passport passport;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(
             name = "house_id",
             referencedColumnName = "id",
@@ -39,7 +37,7 @@ public class Person extends LogModel {
     )
     private House home;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
     @JoinTable(
             name = "house_owner",
             joinColumns = @JoinColumn(name = "person_id"),
